@@ -318,21 +318,6 @@
       background: #f9fbfc;
     }
 
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 0.78rem;
-    }
-
-    .toggle-row input[type="checkbox"] {
-      width: 30px;
-      height: 16px;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
     .section-divider {
       border-top: 1px dashed rgba(148, 163, 184, 0.6);
       margin: 6px 0;
@@ -355,7 +340,7 @@
           <span class="badge">Demo workflow</span>
         </h2>
         <p class="meta">
-          Kies rol en kanaal. De velden vullen zich met demo-berichten (Jan &amp; Truus / groepsapp met therapeut). Pas tekst aan, analyseer en sla op.
+          Kies rol en kanaal. De velden vullen zich met demo-berichten (Jan &amp; Truus / groepsapp met therapeut).
         </p>
       </div>
 
@@ -391,17 +376,6 @@
         <textarea id="draftMessage" placeholder="Typ hier wat je eigenlijk wilt sturen..."></textarea>
       </div>
 
-      <div class="row">
-        <div class="toggle-row">
-          <span class="small-label">Coach tips voor gezonde ouder benadrukken</span>
-          <input type="checkbox" id="focusHealthy" checked />
-        </div>
-        <div class="toggle-row">
-          <span class="small-label">Perspectiefwissel voor andere ouder tonen</span>
-          <input type="checkbox" id="focusNarc" />
-        </div>
-      </div>
-
       <div class="row" style="align-items:center; margin-top:4px;">
         <button class="btn" id="analyzeBtn">
           <span>Analyseer & geef suggesties</span>
@@ -415,8 +389,7 @@
 
       <div class="suggestions" id="analysisOutput">
         <div class="notice">
-          In deze demo staat steeds passende tekst voor Jan / Truus / therapeut klaar per rol + kanaal.
-          Gebruik de knoppen om de hele flow te doorlopen.
+          Vul (of gebruik de demo-tekst) en klik op “Analyseer &amp; geef suggesties” om feedback en coach-zinnen te zien.
         </div>
       </div>
     </div>
@@ -459,8 +432,6 @@
   const channelSelect = document.getElementById("channelSelect");
   const incomingMessage = document.getElementById("incomingMessage");
   const draftMessage = document.getElementById("draftMessage");
-  const focusHealthy = document.getElementById("focusHealthy");
-  const focusNarc = document.getElementById("focusNarc");
   const analyzeBtn = document.getElementById("analyzeBtn");
   const saveLogBtn = document.getElementById("saveLogBtn");
   const analysisOutput = document.getElementById("analysisOutput");
@@ -495,7 +466,7 @@
 
   const STORAGE_KEY = "relatie_communicatie_logboek_v1";
   let logItems = [];
-  let lastSelectedSuggestion = ""; // alleen setten bij klik op "Gebruik deze formulering"
+  let lastSelectedSuggestion = ""; // set bij klik op "Gebruik deze formulering"
 
   function escapeHtml(str) {
     if (!str) return "";
@@ -529,6 +500,14 @@
     }
 
     return flags;
+  }
+
+  // interne defaults, geen toggles meer
+  function getCoachFocus(role) {
+    return {
+      focusHealthy: role === "gezonde-ouder",
+      focusNarc: role !== "gezonde-ouder" || true // praktisch altijd aan
+    };
   }
 
   function generateSuggestions(draft, role, opts) {
@@ -599,10 +578,8 @@
         : "Therapeut / neutraal";
 
     const flags = classifyDraft(draft || "");
-    const suggestions = generateSuggestions(draft || "", role, {
-      focusHealthy: focusHealthy.checked,
-      focusNarc: focusNarc.checked
-    });
+    const focus = getCoachFocus(role);
+    const suggestions = generateSuggestions(draft || "", role, focus);
 
     analysisOutput.innerHTML = "";
 
@@ -650,7 +627,7 @@
       btn.textContent = "Gebruik deze formulering in mijn concept";
       btn.addEventListener("click", () => {
         draftMessage.value = sugg.text;
-        lastSelectedSuggestion = sugg.text;          // alleen hier setten
+        lastSelectedSuggestion = sugg.text;
         buildAnalysisView(incomingMessage.value, draftMessage.value);
       });
       sBlock.appendChild(btn);
@@ -664,6 +641,15 @@
       "Deze tool doet géén diagnose en vervangt geen therapeut. Gebruik het als ondersteuning; " +
       "belangrijke keuzes altijd met een professional afstemmen.";
     analysisOutput.appendChild(footerNotice);
+  }
+
+  function resetAnalysisNotice() {
+    analysisOutput.innerHTML = "";
+    const note = document.createElement("div");
+    note.className = "notice";
+    note.textContent =
+      "Vul (of gebruik de demo-tekst) en klik op “Analyseer & geef suggesties” om feedback en coach-zinnen te zien.";
+    analysisOutput.appendChild(note);
   }
 
   function saveLogToStorage() {
@@ -718,14 +704,12 @@
       header.appendChild(roleSpan);
       header.appendChild(rightMeta);
 
-      // Alleen laatste bericht van de ander
       const bodyIncoming = document.createElement("div");
       bodyIncoming.className = "log-body";
       bodyIncoming.textContent = item.incoming
         ? "Laatste bericht van de ander: " + item.incoming
         : "Laatste bericht van de ander: (niet ingevuld)";
 
-      // Alleen de gekozen coach-formulering met "blauwe arcering" ervoor
       const bodySuggestion = document.createElement("div");
       bodySuggestion.className = "log-body";
       bodySuggestion.style.borderLeft = "4px solid rgba(0,166,166,0.9)";
@@ -747,13 +731,11 @@
   }
 
   function loadLog() {
-    // Voor de demo altijd starten met een leeg logboek
     logItems = [];
     saveLogToStorage();
     renderLog();
   }
 
-  // Demo-scenario per rol + kanaal
   function getDemoScenario(role, channel) {
     if (role === "gezonde-ouder" && channel === "whatsapp") {
       return {
@@ -762,9 +744,7 @@
         draft:
           "Jan: \"Ik ben boos en geraakt door wat je zegt. Wanneer jij zegt dat ik nooit iets goed doe, " +
           "voel ik me machteloos en aangevallen. Ik wil dat we afspraken maken die voorspelbaar zijn voor de kinderen, " +
-          "zonder elkaar te verwijten dat alles altijd fout gaat.\"",
-        focusHealthy: true,
-        focusNarc: true
+          "zonder elkaar te verwijten dat alles altijd fout gaat.\""
       };
     }
 
@@ -775,9 +755,7 @@
         draft:
           "Jan: \"In je mail lees ik dat je je veel zorgen maakt over de onrust bij de kinderen. " +
           "Dat herken ik, en daarom wil ik graag vaste afspraken. Zullen we samen één schema afspreken " +
-          "dat we minimaal drie maanden aanhouden, zodat er meer voorspelbaarheid ontstaat?\"",
-        focusHealthy: true,
-        focusNarc: true
+          "dat we minimaal drie maanden aanhouden, zodat er meer voorspelbaarheid ontstaat?\""
       };
     }
 
@@ -786,9 +764,7 @@
         incoming:
           "Jan via WhatsApp: \"Als jij weer op het laatste moment alles omgooit, raken de kinderen overstuur. Dit werkt zo niet.\"",
         draft:
-          "Truus: \"Jij doet net alsof jij alles perfect doet. Jij bent degene die ALTIJD moeilijk doet over elk detail.\"",
-        focusHealthy: false,
-        focusNarc: false
+          "Truus: \"Jij doet net alsof jij alles perfect doet. Jij bent degene die ALTIJD moeilijk doet over elk detail.\""
       };
     }
 
@@ -800,9 +776,7 @@
         draft:
           "Therapeut: \"Ik hoor bij jullie allebei veel frustratie. Ik stel voor dat we nu even pauzeren met verwijten. " +
           "Willen jullie ieder één voorbeeld delen van een moment waarop het wél beter ging tussen jullie, " +
-          "zodat we vanuit die situaties kunnen onderzoeken wat werkte?\"",
-        focusHealthy: false,
-        focusNarc: true
+          "zodat we vanuit die situaties kunnen onderzoeken wat werkte?\""
       };
     }
 
@@ -813,9 +787,7 @@
         draft:
           "Therapeut: \"Dank voor je mail, Jan. Ik hoor dat voorspelbaarheid voor jou en de kinderen belangrijk is. " +
           "In onze volgende sessie wil ik graag met jullie allebei drie concrete afspraken maken die minimaal een paar maanden gelden, " +
-          "zodat er meer rust ontstaat.\"",
-        focusHealthy: false,
-        focusNarc: true
+          "zodat er meer rust ontstaat.\""
       };
     }
 
@@ -824,9 +796,7 @@
         "Truus: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"",
       draft:
         "Jan: \"Wanneer afspraken last-minute veranderen, raak ik gestrest en maak ik me zorgen of het voor de kinderen wel voorspelbaar blijft. " +
-        "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\"",
-      focusHealthy: true,
-      focusNarc: true
+        "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\""
     };
   }
 
@@ -836,10 +806,8 @@
     const scenario = getDemoScenario(role, channel);
     incomingMessage.value = scenario.incoming || "";
     draftMessage.value = scenario.draft || "";
-    focusHealthy.checked = !!scenario.focusHealthy;
-    focusNarc.checked = !!scenario.focusNarc;
-    lastSelectedSuggestion = ""; // nieuwe context, selectie resetten
-    buildAnalysisView(incomingMessage.value, draftMessage.value);
+    lastSelectedSuggestion = "";
+    resetAnalysisNotice();
   }
 
   analyzeBtn.addEventListener("click", () => {
@@ -852,7 +820,6 @@
     const incoming = incomingMessage.value || "";
     const draft = draftMessage.value || "";
 
-    const flags = classifyDraft(draft || ""); // alleen voor signalen (nu niet getoond, maar bruikbaar als je wilt uitbreiden)
     const selectedSuggestion = lastSelectedSuggestion || "";
 
     const role = roleSelect.value;
@@ -874,9 +841,6 @@
         incoming ||
         "(demo) Er is een bericht binnengekomen via " + channelLabel + ".",
       selectedSuggestion,
-      flags,
-      focusHealthy: focusHealthy.checked,
-      focusNarc: focusNarc.checked,
       createdAt: new Date().toISOString()
     });
   });
@@ -907,8 +871,9 @@
   roleSelect.addEventListener("change", seedFormDemoFromSelection);
   channelSelect.addEventListener("change", seedFormDemoFromSelection);
 
-  loadLog();                 // leeg logboek
-  seedFormDemoFromSelection(); // demo-inhoud + analyse links
+  loadLog();             // leeg logboek
+  resetAnalysisNotice(); // alleen uitleg-notice
+  seedFormDemoFromSelection(); // demo-tekst, nog geen analyse
 </script>
 </body>
 </html>
