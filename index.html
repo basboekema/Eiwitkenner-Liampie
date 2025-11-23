@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <title>Relatie & Systeem Communicatie Coach</title>
+  <title>Relatie & Systeem Communicatie Coach - Demo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
@@ -389,7 +389,7 @@
 <body>
 <header>
   <h1>Communicatie Coach voor Relatie- & Systeemtherapie</h1>
-  <p>Analyseer berichten, vermijd escalatie, bouw een logboek op en oefen gezondere communicatie.</p>
+  <p>Analyseer berichten, vermijd escalatie, bouw een logboek op en oefen gezondere communicatie (demo met Jan &amp; Truus).</p>
 </header>
 
 <main>
@@ -402,8 +402,7 @@
           <span class="badge">Live feedback</span>
         </h2>
         <p class="meta">
-          Vul het bericht van de ander en jouw conceptreactie in. De coach markeert risico-woorden
-          en doet alternatieve voorstellen.
+          Demo: standaard geladen met een gesprek tussen Jan en Truus (WhatsApp). Pas tekst aan en laat opnieuw analyseren.
         </p>
       </div>
 
@@ -430,12 +429,12 @@
       <div class="section-divider"></div>
 
       <div>
-        <label for="incomingMessage">Laatste bericht van de ander</label>
+        <label for="incomingMessage">Laatste bericht van de ander (Truus → Jan)</label>
         <textarea id="incomingMessage" placeholder="Plak hier het bericht waar je op wilt reageren..."></textarea>
       </div>
 
       <div>
-        <label for="draftMessage">Mijn conceptreactie</label>
+        <label for="draftMessage">Mijn conceptreactie (Jan → Truus)</label>
         <textarea id="draftMessage" placeholder="Typ hier wat je eigenlijk wilt sturen..."></textarea>
       </div>
 
@@ -463,8 +462,8 @@
 
       <div class="suggestions" id="analysisOutput">
         <div class="notice">
-          Tip: begin altijd met je conceptreactie te plakken/typen en druk dan op
-          “Analyseer & geef suggesties”.
+          Tip: in deze demo staat al tekst van Jan &amp; Truus ingevuld. Druk op
+          “Analyseer &amp; geef suggesties” om de workflow te laten zien.
         </div>
       </div>
     </div>
@@ -476,11 +475,10 @@
       <div>
         <h2>
           Logboek & Patronen
-          <span class="badge">Local only</span>
+          <span class="badge">Demo data</span>
         </h2>
         <p class="meta">
-          Alle items blijven alleen in deze browser (localStorage). Handig als geheugensteun
-          richting hulpverlening of systeemtherapie.
+          Voorbeelditems met Jan en Truus zijn al geladen. Gebruik dit om richting hulpverlening of systeemtherapie te laten zien hoe het logboek werkt.
         </p>
       </div>
 
@@ -547,114 +545,7 @@
   const STORAGE_KEY = "relatie_communicatie_logboek_v1";
   let logItems = [];
 
-  function loadLog() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      logItems = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      logItems = [];
-    }
-    renderLog();
-  }
-
-  function saveLogToStorage() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(logItems));
-    } catch (e) {
-      console.warn("Opslaan in localStorage mislukt", e);
-    }
-  }
-
-  function addLogItem(entry) {
-    logItems.unshift(entry);
-    saveLogToStorage();
-    renderLog();
-  }
-
-  function renderLog() {
-    logList.innerHTML = "";
-    if (!logItems.length) {
-      logEmptyNotice.style.display = "block";
-      return;
-    }
-    logEmptyNotice.style.display = "none";
-
-    logItems.forEach((item, idx) => {
-      const div = document.createElement("div");
-      div.className = "log-item";
-
-      const header = document.createElement("div");
-      header.className = "log-item-header";
-
-      const roleSpan = document.createElement("span");
-      roleSpan.className = "log-role";
-      roleSpan.textContent = item.roleLabel || item.role || "Onbekend";
-
-      const rightMeta = document.createElement("div");
-      rightMeta.style.display = "flex";
-      rightMeta.style.alignItems = "center";
-      rightMeta.style.gap = "6px";
-
-      const channel = document.createElement("span");
-      channel.className = "log-channel";
-      channel.textContent = item.channelLabel || item.channel || "kanaal";
-      rightMeta.appendChild(channel);
-
-      const timeSpan = document.createElement("span");
-      timeSpan.style.fontSize = "0.7rem";
-      timeSpan.style.color = "#6b7280";
-      timeSpan.textContent = new Date(item.createdAt).toLocaleString();
-      rightMeta.appendChild(timeSpan);
-
-      header.appendChild(roleSpan);
-      header.appendChild(rightMeta);
-
-      const bodyIncoming = document.createElement("div");
-      bodyIncoming.className = "log-body";
-      bodyIncoming.textContent = item.incoming
-        ? "Ander: " + item.incoming
-        : "(geen origineel bericht ingevuld)";
-
-      const bodyDraft = document.createElement("div");
-      bodyDraft.className = "log-body";
-      bodyDraft.textContent = "Mijn concept: " + (item.draft || "(leeg)");
-
-      const bodySuggestion = document.createElement("div");
-      bodySuggestion.className = "log-body";
-      bodySuggestion.style.borderLeft = "2px solid rgba(56,189,248,0.7)";
-      bodySuggestion.style.paddingLeft = "6px";
-      bodySuggestion.style.marginTop = "4px";
-      bodySuggestion.textContent =
-        item.selectedSuggestion ||
-        (item.summarySuggestion || "Geen specifieke suggestie opgeslagen.");
-
-      const flags = document.createElement("div");
-      flags.className = "log-meta";
-      if (item.flags && item.flags.length) {
-        flags.textContent = "Signalen: " + item.flags.join(", ");
-      } else {
-        flags.textContent = "Signalen: geen opvallende escalatie-woorden gedetecteerd.";
-      }
-
-      const metaCoach = document.createElement("div");
-      metaCoach.className = "log-meta";
-      metaCoach.textContent =
-        "Coachfocus: " +
-        (item.focusHealthy ? "gezonde ouder " : "") +
-        (item.focusNarc ? " + perspectiefwissel andere ouder" : "");
-
-      div.appendChild(header);
-      div.appendChild(bodyIncoming);
-      div.appendChild(bodyDraft);
-      div.appendChild(bodySuggestion);
-      div.appendChild(flags);
-      div.appendChild(metaCoach);
-
-      logList.appendChild(div);
-    });
-  }
-
-  // Eenvoudige helper om HTML te escapen
+  // Helper om HTML te escapen
   function escapeHtml(str) {
     if (!str) return "";
     return str
@@ -704,60 +595,54 @@
     const suggestions = [];
     const trimmed = draft.trim();
 
-    // Basis herformulering in ik-vorm (algemeen voorstel)
     suggestions.push({
       title: "Meer in ik-taal en concreet gedrag",
       text:
         "Wanneer [concreet gedrag van de ander], dan voel ik mij [gevoel] en ik heb nodig dat [concrete behoefte]. " +
-        "Zou je [specifiek verzoek] willen doen, zodat we dit voor de kinderen rustiger houden?",
+        "Zou je [specifiek verzoek] willen doen, zodat we dit voor de kinderen rustiger houden?"
     });
 
-    // Minder beschuldigend
     suggestions.push({
       title: "Van jij-beschuldiging naar gezamenlijke focus",
       text:
         "Ik merk dat deze situatie mij veel spanning geeft. Ik wil voorkomen dat we in verwijten blijven hangen. " +
-        "Kunnen we samen kijken naar een oplossing waarin zowel jouw als mijn zorgen een plek krijgen?",
+        "Kunnen we samen kijken naar een oplossing waarin zowel jouw als mijn zorgen een plek krijgen?"
     });
 
-    // Extra focus voor gezonde ouder
     if (opts.focusHealthy) {
       suggestions.push({
         title: "Gezonde ouder: begrenzen zonder escaleren",
         text:
           "Ik begrijp dat jij dit anders ziet. Voor mij is het belangrijk dat we afspraken maken die voorspelbaar zijn voor de kinderen. " +
-          "Dit is voor mij de grens: [beschrijf kort en concreet]. Ik blijf hierover rustig, maar ik wijk daar niet van af.",
+          "Dit is voor mij de grens: [beschrijf kort en concreet]. Ik blijf hierover rustig, maar ik wijk daar niet van af."
       });
     }
 
-    // Perspectief op mogelijke narcistische trekken (zonder te diagnosticeren)
     if (opts.focusNarc) {
       suggestions.push({
         title: "Perspectiefwisseling: erkenning + grens",
         text:
           "Ik zie dat het voor jou ook een lastig onderwerp is en dat je je mogelijk niet gehoord voelt. " +
-          "Tegelijk heb ik mijn eigen grenzen en behoeften. Ik wil jouw kant horen, maar niet ten koste van respect naar mij toe.",
+          "Tegelijk heb ik mijn eigen grenzen en behoeften. Ik wil jouw kant horen, maar niet ten koste van respect naar mij toe."
       });
     }
 
-    // Specifiek als er dreiging/advocaat in de draft zit
     const lower = draft.toLowerCase();
     if (lower.includes("advocaat") || lower.includes("rechter")) {
       suggestions.push({
         title: "Juridische toon verzachten (als het kan)",
         text:
           "Ik wil liever voorkomen dat we meteen alles juridisch maken. " +
-          "Zullen we eerst proberen om met hulp van onze therapeut / begeleider dit gesprek te voeren, zodat we beide beter gehoord worden?",
+          "Zullen we eerst proberen om met hulp van onze therapeut / begeleider dit gesprek te voeren, zodat we beide beter gehoord worden?"
       });
     }
 
-    // Indien concept erg leeg is, geef startzin
     if (!trimmed) {
       suggestions.push({
         title: "Startzin als je vastloopt",
         text:
           "Ik vind het lastig om dit rustig te verwoorden, dus ik probeer het stap voor stap: " +
-          "voor mij is er iets belangrijk waar ik met je over wil afstemmen, omdat het invloed heeft op de kinderen.",
+          "voor mij is er iets belangrijk waar ik met je over wil afstemmen, omdat het invloed heeft op de kinderen."
       });
     }
 
@@ -768,9 +653,9 @@
     const role = roleSelect.value;
     const roleLabel =
       role === "gezonde-ouder"
-        ? "Gezonde ouder / hulpzoekende ouder"
+        ? "Gezonde ouder / hulpzoekende ouder (Jan)"
         : role === "andere-ouder"
-        ? "Andere ouder"
+        ? "Andere ouder (Truus)"
         : "Neutraal";
 
     const flags = classifyDraft(draft || "");
@@ -781,12 +666,11 @@
 
     const suggestions = generateSuggestions(draft || "", role, {
       focusHealthy: focusHealthy.checked,
-      focusNarc: focusNarc.checked,
+      focusNarc: focusNarc.checked
     });
 
     analysisOutput.innerHTML = "";
 
-    // Samenvatting blok
     const summaryBlock = document.createElement("div");
     summaryBlock.className = "suggestion-block";
     summaryBlock.innerHTML =
@@ -815,7 +699,6 @@
     summaryBlock.appendChild(chips);
     analysisOutput.appendChild(summaryBlock);
 
-    // Concept-reactie met highlight
     const draftBlock = document.createElement("div");
     draftBlock.className = "suggestion-block";
     draftBlock.innerHTML =
@@ -826,20 +709,18 @@
       }</div>`;
     analysisOutput.appendChild(draftBlock);
 
-    // Inkomend bericht (optioneel)
     if (incoming && incoming.trim()) {
       const incomingBlock = document.createElement("div");
       incomingBlock.className = "suggestion-block";
       incomingBlock.innerHTML =
-        "<strong>Laatste bericht van de ander</strong>" +
+        "<strong>Laatste bericht van de ander (Truus)</strong>" +
         `<div style="margin-top:4px; font-size:0.84rem; line-height:1.4;">${escapeHtml(
           incoming
         )}</div>`;
       analysisOutput.appendChild(incomingBlock);
     }
 
-    // Suggesties per blok
-    suggestions.forEach((sugg, index) => {
+    suggestions.forEach((sugg) => {
       const sBlock = document.createElement("div");
       sBlock.className = "suggestion-block";
       sBlock.innerHTML =
@@ -853,7 +734,6 @@
       btn.textContent = "Gebruik deze formulering in mijn concept";
       btn.addEventListener("click", () => {
         draftMessage.value = sugg.text;
-        // Her-analyseer met nieuwe tekst
         buildAnalysisView(incomingMessage.value, draftMessage.value);
       });
       sBlock.appendChild(btn);
@@ -861,7 +741,6 @@
       analysisOutput.appendChild(sBlock);
     });
 
-    // Klein voetnootje
     const footerNotice = document.createElement("div");
     footerNotice.className = "notice";
     footerNotice.textContent =
@@ -869,11 +748,230 @@
       "belangrijke keuzes altijd met een professional afstemmen.";
     analysisOutput.appendChild(footerNotice);
 
-    // Return data voor logboek
     return {
       flags,
-      primarySuggestion: suggestions.length ? suggestions[0].text : "",
+      primarySuggestion: suggestions.length ? suggestions[0].text : ""
     };
+  }
+
+  function loadLog() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      logItems = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      logItems = [];
+    }
+
+    // Als er nog geen log-items zijn, vul met demo-data over Jan & Truus
+    if (!logItems || !logItems.length) {
+      seedDemoLog();
+      saveLogToStorage();
+    }
+    renderLog();
+  }
+
+  function saveLogToStorage() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logItems));
+    } catch (e) {
+      console.warn("Opslaan in localStorage mislukt", e);
+    }
+  }
+
+  function addLogItem(entry) {
+    logItems.unshift(entry);
+    saveLogToStorage();
+    renderLog();
+  }
+
+  function renderLog() {
+    logList.innerHTML = "";
+    if (!logItems.length) {
+      logEmptyNotice.style.display = "block";
+      return;
+    }
+    logEmptyNotice.style.display = "none";
+
+    logItems.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "log-item";
+
+      const header = document.createElement("div");
+      header.className = "log-item-header";
+
+      const roleSpan = document.createElement("span");
+      roleSpan.className = "log-role";
+      roleSpan.textContent = item.roleLabel || item.role || "Onbekend";
+
+      const rightMeta = document.createElement("div");
+      rightMeta.style.display = "flex";
+      rightMeta.style.alignItems = "center";
+      rightMeta.style.gap = "6px";
+
+      const channel = document.createElement("span");
+      channel.className = "log-channel";
+      channel.textContent = item.channelLabel || item.channel || "kanaal";
+      rightMeta.appendChild(channel);
+
+      const timeSpan = document.createElement("span");
+      timeSpan.style.fontSize = "0.7rem";
+      timeSpan.style.color = "#6b7280";
+      timeSpan.textContent = new Date(item.createdAt).toLocaleString();
+      rightMeta.appendChild(timeSpan);
+
+      header.appendChild(roleSpan);
+      header.appendChild(rightMeta);
+
+      const bodyIncoming = document.createElement("div");
+      bodyIncoming.className = "log-body";
+      bodyIncoming.textContent = item.incoming
+        ? item.incoming
+        : "(geen origineel bericht ingevuld)";
+
+      const bodyDraft = document.createElement("div");
+      bodyDraft.className = "log-body";
+      bodyDraft.textContent = item.draft || "(geen concept opgeslagen)";
+
+      const bodySuggestion = document.createElement("div");
+      bodySuggestion.className = "log-body";
+      bodySuggestion.style.borderLeft = "2px solid rgba(56,189,248,0.7)";
+      bodySuggestion.style.paddingLeft = "6px";
+      bodySuggestion.style.marginTop = "4px";
+      bodySuggestion.textContent =
+        item.selectedSuggestion ||
+        (item.summarySuggestion || "Geen specifieke suggestie opgeslagen.");
+
+      const flags = document.createElement("div");
+      flags.className = "log-meta";
+      if (item.flags && item.flags.length) {
+        flags.textContent = "Signalen: " + item.flags.join(", ");
+      } else {
+        flags.textContent = "Signalen: geen opvallende escalatie-woorden gedetecteerd.";
+      }
+
+      const metaCoach = document.createElement("div");
+      metaCoach.className = "log-meta";
+      metaCoach.textContent =
+        "Coachfocus: " +
+        (item.focusHealthy ? "gezonde ouder " : "") +
+        (item.focusNarc ? "+ perspectiefwissel andere ouder" : "");
+
+      div.appendChild(header);
+      div.appendChild(bodyIncoming);
+      div.appendChild(bodyDraft);
+      div.appendChild(bodySuggestion);
+      div.appendChild(flags);
+      div.appendChild(metaCoach);
+
+      logList.appendChild(div);
+    });
+  }
+
+  // Demo-logboek met Jan & Truus
+  function seedDemoLog() {
+    const demoEntries = [];
+
+    // 1: vrij heftige escalatie van Jan (om te laten zien wat er gedetecteerd wordt)
+    const incoming1 =
+      "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
+    const draft1 =
+      "Jan: \"Jij bent degene die altijd alles kapot maakt. Ik ben er KLAAR mee en ik ga wel naar de advocaat, jij luistert toch nooit.\"";
+
+    const flags1 = classifyDraft(draft1);
+    const suggs1 = generateSuggestions(draft1, "gezonde-ouder", {
+      focusHealthy: true,
+      focusNarc: false
+    });
+
+    demoEntries.push({
+      role: "gezonde-ouder",
+      roleLabel: "Gezonde ouder (Jan)",
+      channel: "whatsapp",
+      channelLabel: "WhatsApp",
+      incoming: incoming1,
+      draft: draft1,
+      selectedSuggestion: suggs1.length ? suggs1[0].text : "",
+      summarySuggestion: suggs1.length ? suggs1[0].text : "",
+      flags: flags1,
+      focusHealthy: true,
+      focusNarc: false,
+      createdAt: new Date().toISOString()
+    });
+
+    // 2: meer gereguleerde reactie van Jan na coaching
+    const incoming2 =
+      "Truus via WhatsApp: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"";
+    const draft2 =
+      "Jan: \"Wanneer afspraken last-minute veranderen, raak ik gestrest en maak ik me zorgen of het voor de kinderen wel voorspelbaar blijft. " +
+      "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\"";
+
+    const flags2 = classifyDraft(draft2);
+    const suggs2 = generateSuggestions(draft2, "gezonde-ouder", {
+      focusHealthy: true,
+      focusNarc: true
+    });
+
+    demoEntries.push({
+      role: "gezonde-ouder",
+      roleLabel: "Gezonde ouder (Jan)",
+      channel: "whatsapp",
+      channelLabel: "WhatsApp",
+      incoming: incoming2,
+      draft: draft2,
+      selectedSuggestion: suggs2.length ? suggs2[0].text : "",
+      summarySuggestion: suggs2.length ? suggs2[0].text : "",
+      flags: flags2,
+      focusHealthy: true,
+      focusNarc: true,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
+    });
+
+    // 3: voorbeeld waarin therapeut of neutrale rol meekijkt
+    const incoming3 =
+      "Truus: \"Ik ben je gedrag zat, jij verandert toch nooit.\" (groepchat ‘Co-ouderschap Jan & Truus & therapeut’)";
+    const draft3 =
+      "Therapeut: \"Ik hoor dat je veel frustratie ervaart, Truus. Tegelijk zie ik bij Jan ook de wens om het anders te doen. " +
+      "Zullen we allebei één concreet voorbeeld noemen van wat wél werkte, zodat we daarop kunnen voortbouwen?\"";
+
+    const flags3 = classifyDraft(draft3);
+    const suggs3 = generateSuggestions(draft3, "neutraal", {
+      focusHealthy: false,
+      focusNarc: true
+    });
+
+    demoEntries.push({
+      role: "neutraal",
+      roleLabel: "Therapeut / neutraal",
+      channel: "signal",
+      channelLabel: "Signal",
+      incoming: incoming3,
+      draft: draft3,
+      selectedSuggestion: suggs3.length ? suggs3[0].text : "",
+      summarySuggestion: suggs3.length ? suggs3[0].text : "",
+      flags: flags3,
+      focusHealthy: false,
+      focusNarc: true,
+      createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
+    });
+
+    logItems = demoEntries;
+  }
+
+  function seedFormDemo() {
+    // Jan als gezonde ouder op WhatsApp
+    roleSelect.value = "gezonde-ouder";
+    channelSelect.value = "whatsapp";
+    focusHealthy.checked = true;
+    focusNarc.checked = true;
+
+    // Demo-tekst in de velden
+    incomingMessage.value =
+      "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
+
+    draftMessage.value =
+      "Jan: \"Ik ben boos en geraakt door wat je zegt. Wanneer jij zegt dat ik nooit iets goed doe, " +
+      "voel ik me machteloos en aangevallen. Ik wil dat we afspraken maken die voorspelbaar zijn voor de kinderen, " +
+      "zonder elkaar te verwijten dat alles altijd fout gaat.\"";
   }
 
   // Event-handlers
@@ -892,9 +990,9 @@
     const role = roleSelect.value;
     const roleLabel =
       role === "gezonde-ouder"
-        ? "Gezonde ouder / hulpzoekende ouder"
+        ? "Gezonde ouder (Jan)"
         : role === "andere-ouder"
-        ? "Andere ouder"
+        ? "Andere ouder (Truus)"
         : "Neutraal";
 
     const channelLabel = channelSelect.options[channelSelect.selectedIndex].text;
@@ -904,25 +1002,27 @@
       roleLabel,
       channel: channelSelect.value,
       channelLabel,
-      incoming,
-      draft,
+      incoming:
+        incoming ||
+        "(demo) Truus heeft een bericht gestuurd via " + channelLabel + " aan Jan.",
+      draft: draft || "(demo) Jan heeft nog geen conceptreactie ingevuld.",
       selectedSuggestion: primarySuggestion,
       summarySuggestion: primarySuggestion,
       flags,
       focusHealthy: focusHealthy.checked,
       focusNarc: focusNarc.checked,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
     });
   });
 
   exportBtn.addEventListener("click", () => {
     const blob = new Blob([JSON.stringify(logItems, null, 2)], {
-      type: "application/json",
+      type: "application/json"
     });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "communicatie-logboek.json";
+    a.download = "communicatie-logboek-demo-jan-truus.json";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -938,11 +1038,10 @@
     renderLog();
   });
 
-  // Init
+  // Init: demo-data + directe analyse van Jan & Truus
   loadLog();
-  // eventueel een minimale demo-analyse bij start (optioneel uit):
-  // buildAnalysisView("", "");
+  seedFormDemo();
+  buildAnalysisView(incomingMessage.value, draftMessage.value);
 </script>
 </body>
 </html>
-
