@@ -6,19 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #0f172a;
-      --bg-alt: #020617;
-      --card: #111827;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.12);
-      --danger: #f97373;
-      --border: #1f2937;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
+      --bg: #f3f5f7;
+      --card: #ffffff;
+      --accent: #00a6a6; /* zorg-achtige teal */
+      --accent-soft: rgba(0, 166, 166, 0.08);
+      --accent-soft-strong: rgba(0, 166, 166, 0.14);
+      --danger: #e53935;
+      --border: #d1d9e0;
+      --text: #102a43;
+      --muted: #6b7b8c;
       --radius-lg: 16px;
       --radius-md: 10px;
-      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.4);
-      --shadow-subtle: 0 8px 24px rgba(15, 23, 42, 0.6);
+      --shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.08);
+      --shadow-subtle: 0 2px 8px rgba(15, 23, 42, 0.06);
       --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
@@ -30,7 +30,7 @@
       margin: 0;
       padding: 0;
       font-family: var(--font-sans);
-      background: radial-gradient(circle at top, #1d283a, #020617);
+      background: radial-gradient(circle at top, #e1edf3, #f3f5f7);
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -39,23 +39,22 @@
 
     header {
       padding: 18px 24px;
-      border-bottom: 1px solid rgba(15,23,42,0.9);
-      background: linear-gradient(120deg, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
-      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(209, 217, 224, 0.8);
+      background: linear-gradient(120deg, #ffffff, #eef5f7);
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
     header h1 {
-      font-size: 1.35rem;
+      font-size: 1.4rem;
       margin: 0 0 4px 0;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.02em;
     }
 
     header p {
       margin: 0;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       color: var(--muted);
     }
 
@@ -76,7 +75,7 @@
     }
 
     .card {
-      background: radial-gradient(circle at top left, #1f2937, #020617);
+      background: var(--card);
       border-radius: var(--radius-lg);
       border: 1px solid var(--border);
       box-shadow: var(--shadow-soft);
@@ -92,8 +91,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top right, rgba(56,189,248,0.12), transparent 60%);
-      opacity: 0.7;
+      background: radial-gradient(circle at top right, var(--accent-soft), transparent 60%);
       pointer-events: none;
     }
 
@@ -119,8 +117,8 @@
       letter-spacing: 0.08em;
       padding: 2px 8px;
       border-radius: 999px;
-      border: 1px solid rgba(56,189,248,0.4);
-      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(0, 166, 166, 0.4);
+      background: #f0fbfb;
       color: var(--accent);
     }
 
@@ -141,8 +139,8 @@
       width: 100%;
       padding: 7px 9px;
       border-radius: 10px;
-      border: 1px solid #1f2937;
-      background: #020617;
+      border: 1px solid #c5d0db;
+      background: #f9fbfc;
       color: var(--text);
       font-family: inherit;
       font-size: 0.86rem;
@@ -159,7 +157,8 @@
 
     select:focus, textarea:focus, input[type="text"]:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+      box-shadow: 0 0 0 1px rgba(0, 166, 166, 0.25);
+      background: #ffffff;
     }
 
     .row {
@@ -184,34 +183,33 @@
       font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
-      background: linear-gradient(135deg, #0ea5e9, #22c55e);
-      color: #0b1120;
-      box-shadow: 0 12px 32px rgba(34, 197, 94, 0.5);
+      background: linear-gradient(135deg, #00b3a8, #46c368);
+      color: #ffffff;
+      box-shadow: 0 8px 22px rgba(0, 179, 168, 0.25);
       transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, opacity 0.1s;
       white-space: nowrap;
     }
 
     .btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 18px 45px rgba(34, 197, 94, 0.7);
-      opacity: 0.96;
+      box-shadow: 0 12px 30px rgba(0, 179, 168, 0.3);
+      opacity: 0.98;
     }
 
     .btn:active {
       transform: translateY(0);
-      box-shadow: 0 10px 26px rgba(34, 197, 94, 0.6);
+      box-shadow: 0 6px 16px rgba(0, 179, 168, 0.25);
     }
 
     .btn.secondary {
-      background: transparent;
+      background: #ffffff;
       color: var(--accent);
-      border-color: rgba(148, 163, 184, 0.7);
-      box-shadow: none;
+      border-color: rgba(0, 166, 166, 0.45);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
     }
 
     .btn.secondary:hover {
-      background: rgba(15, 23, 42, 0.98);
-      box-shadow: 0 8px 26px rgba(15, 23, 42, 0.9);
+      background: #f0fbfb;
     }
 
     .btn.small {
@@ -220,15 +218,14 @@
     }
 
     .btn.danger {
-      border-color: rgba(248,113,113,0.6);
+      border-color: rgba(229, 57, 53, 0.4);
       color: var(--danger);
-      background: transparent;
-      box-shadow: none;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(229, 57, 53, 0.15);
     }
 
     .btn.danger:hover {
-      background: rgba(239,68,68,0.08);
-      box-shadow: 0 6px 18px rgba(239,68,68,0.4);
+      background: #fef4f4;
     }
 
     .chips {
@@ -244,12 +241,13 @@
       font-size: 0.68rem;
       border: 1px solid rgba(148,163,184,0.5);
       color: var(--muted);
+      background: #f7fafc;
     }
 
     .chip.flag {
-      border-color: rgba(248,113,113,0.7);
+      border-color: rgba(229, 57, 53, 0.7);
       color: var(--danger);
-      background: rgba(127,29,29,0.25);
+      background: #fef0ef;
     }
 
     .small-label {
@@ -265,10 +263,10 @@
     }
 
     .suggestion-block {
-      background: rgba(15, 23, 42, 0.98);
+      background: #f9fbfc;
       border-radius: var(--radius-md);
       padding: 8px 9px;
-      border: 1px solid rgba(75,85,99,0.8);
+      border: 1px solid rgba(197, 208, 219, 0.9);
     }
 
     .log-list {
@@ -283,8 +281,8 @@
     .log-item {
       border-radius: 12px;
       padding: 7px 9px;
-      border: 1px solid rgba(55,65,81,0.9);
-      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(197, 208, 219, 0.9);
+      background: #f9fbfc;
       font-size: 0.8rem;
       display: flex;
       flex-direction: column;
@@ -303,20 +301,23 @@
     .log-role {
       padding: 1px 7px;
       border-radius: 999px;
-      border: 1px solid rgba(56,189,248,0.4);
+      border: 1px solid rgba(0, 166, 166, 0.4);
       color: var(--accent);
+      background: #f0fbfb;
     }
 
     .log-channel {
       font-size: 0.7rem;
       padding: 1px 6px;
       border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.4);
+      border: 1px solid rgba(148,163,184,0.5);
+      background: #ffffff;
+      color: var(--muted);
     }
 
     .log-body {
       white-space: pre-wrap;
-      color: #e5e7eb;
+      color: var(--text);
     }
 
     .log-meta {
@@ -328,9 +329,9 @@
       font-size: 0.72rem;
       color: var(--muted);
       border-radius: 999px;
-      padding: 3px 8px;
-      border: 1px dashed rgba(148,163,184,0.5);
-      background: rgba(15,23,42,0.9);
+      padding: 4px 10px;
+      border: 1px dashed rgba(148,163,184,0.6);
+      background: #f9fbfc;
     }
 
     .toggle-row {
@@ -349,7 +350,7 @@
     }
 
     .section-divider {
-      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      border-top: 1px dashed rgba(148, 163, 184, 0.6);
       margin: 6px 0;
     }
   </style>
@@ -357,7 +358,7 @@
 <body>
 <header>
   <h1>Communicatie Coach voor Relatie- & Systeemtherapie</h1>
-  <p>Analyseer berichten, vermijd escalatie, bouw een logboek op en oefen gezondere communicatie (demo met Jan &amp; Truus).</p>
+  <p>Demo met Jan, Truus en de therapeut. Analyseer berichten, bouw een logboek en oefen gezondere communicatie.</p>
 </header>
 
 <main>
@@ -367,10 +368,10 @@
       <div>
         <h2>
           Analyse & Coach
-          <span class="badge">Live feedback</span>
+          <span class="badge">Demo workflow</span>
         </h2>
         <p class="meta">
-          Demo: standaard geladen met een gesprek tussen Jan en Truus (WhatsApp). Pas tekst aan en laat opnieuw analyseren.
+          Kies rol en kanaal. De velden vullen zich met demo-berichten (Jan &amp; Truus / groepsapp met therapeut). Pas tekst aan, analyseer en sla op.
         </p>
       </div>
 
@@ -378,8 +379,8 @@
         <div>
           <label for="roleSelect">Ik schrijf als</label>
           <select id="roleSelect">
-            <option value="gezonde-ouder">Gezonde ouder / ouder die hulp zoekt</option>
-            <option value="andere-ouder">Andere ouder (mogelijk met sterke narcistische trekken)</option>
+            <option value="gezonde-ouder">Gezonde ouder (Jan)</option>
+            <option value="andere-ouder">Andere ouder (Truus)</option>
             <option value="neutraal">Neutrale deelnemer / therapeut</option>
           </select>
         </div>
@@ -387,9 +388,9 @@
           <label for="channelSelect">Kanaal (fictieve koppeling)</label>
           <select id="channelSelect">
             <option value="whatsapp">WhatsApp</option>
-            <option value="signal">Signal</option>
+            <option value="signal">Signal (groepsapp met therapeut)</option>
             <option value="telegram">Telegram</option>
-            <option value="anders">Anders / e-mail</option>
+            <option value="anders">E-mail / anders</option>
           </select>
         </div>
       </div>
@@ -397,12 +398,12 @@
       <div class="section-divider"></div>
 
       <div>
-        <label for="incomingMessage">Laatste bericht van de ander (Truus → Jan)</label>
+        <label for="incomingMessage">Laatste bericht van de ander</label>
         <textarea id="incomingMessage" placeholder="Plak hier het bericht waar je op wilt reageren..."></textarea>
       </div>
 
       <div>
-        <label for="draftMessage">Mijn conceptreactie (Jan → Truus)</label>
+        <label for="draftMessage">Mijn conceptreactie</label>
         <textarea id="draftMessage" placeholder="Typ hier wat je eigenlijk wilt sturen..."></textarea>
       </div>
 
@@ -430,8 +431,8 @@
 
       <div class="suggestions" id="analysisOutput">
         <div class="notice">
-          Tip: in deze demo staat al tekst van Jan &amp; Truus ingevuld. Druk op
-          “Analyseer &amp; geef suggesties” om de workflow te laten zien.
+          In deze demo staat steeds passende tekst voor Jan / Truus / therapeut klaar per rol + kanaal.
+          Gebruik de knoppen om de hele flow te doorlopen.
         </div>
       </div>
     </div>
@@ -446,7 +447,7 @@
           <span class="badge">Demo data</span>
         </h2>
         <p class="meta">
-          Voorbeelditems met Jan en Truus zijn al geladen. Gebruik dit om richting hulpverlening of systeemtherapie te laten zien hoe het logboek werkt.
+          Voorbeelditems met Jan, Truus en de therapeut zijn vooraf gevuld. Het logboek blijft lokaal in deze browser (localStorage).
         </p>
       </div>
 
@@ -606,10 +607,10 @@
     const role = roleSelect.value;
     const roleLabel =
       role === "gezonde-ouder"
-        ? "Gezonde ouder / hulpzoekende ouder (Jan)"
+        ? "Gezonde ouder (Jan)"
         : role === "andere-ouder"
         ? "Andere ouder (Truus)"
-        : "Neutraal";
+        : "Therapeut / neutraal";
 
     const flags = classifyDraft(draft || "");
     const suggestions = generateSuggestions(draft || "", role, {
@@ -747,7 +748,7 @@
 
       const bodySuggestion = document.createElement("div");
       bodySuggestion.className = "log-body";
-      bodySuggestion.style.borderLeft = "2px solid rgba(56,189,248,0.7)";
+      bodySuggestion.style.borderLeft = "3px solid " + "rgba(0,166,166,0.55)";
       bodySuggestion.style.paddingLeft = "6px";
       bodySuggestion.style.marginTop = "4px";
       bodySuggestion.textContent =
@@ -837,7 +838,7 @@
     });
 
     const incoming3 =
-      "Truus: \"Ik ben je gedrag zat, jij verandert toch nooit.\" (groepchat ‘Co-ouderschap Jan & Truus & therapeut’)";
+      "Truus: \"Ik ben je gedrag zat, jij verandert toch nooit.\" (Signal-groepsapp ‘Co-ouderschap Jan & Truus & therapeut’)";
     const draft3 =
       "Therapeut: \"Ik hoor dat je veel frustratie ervaart, Truus. Tegelijk zie ik bij Jan ook de wens om het anders te doen. " +
       "Zullen we allebei één concreet voorbeeld noemen van wat wél werkte, zodat we daarop kunnen voortbouwen?\"";
@@ -881,19 +882,98 @@
     renderLog();
   }
 
-  function seedFormDemo() {
-    roleSelect.value = "gezonde-ouder";
-    channelSelect.value = "whatsapp";
-    focusHealthy.checked = true;
-    focusNarc.checked = true;
+  // Demo-scenario per rol + kanaal
+  function getDemoScenario(role, channel) {
+    // gezondere ouder Jan op WhatsApp
+    if (role === "gezonde-ouder" && channel === "whatsapp") {
+      return {
+        incoming:
+          "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"",
+        draft:
+          "Jan: \"Ik ben boos en geraakt door wat je zegt. Wanneer jij zegt dat ik nooit iets goed doe, " +
+          "voel ik me machteloos en aangevallen. Ik wil dat we afspraken maken die voorspelbaar zijn voor de kinderen, " +
+          "zonder elkaar te verwijten dat alles altijd fout gaat.\"",
+        focusHealthy: true,
+        focusNarc: true
+      };
+    }
 
-    incomingMessage.value =
-      "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
+    // gezondere ouder Jan via e-mail
+    if (role === "gezonde-ouder" && channel === "anders") {
+      return {
+        incoming:
+          "Truus per e-mail: \"Je hebt wéér het schema aangepast zonder overleg. De kinderen worden hier alleen maar onrustig van door jou.\"",
+        draft:
+          "Jan: \"In je mail lees ik dat je je veel zorgen maakt over de onrust bij de kinderen. " +
+          "Dat herken ik, en daarom wil ik graag vaste afspraken. Zullen we samen één schema afspreken " +
+          "dat we minimaal drie maanden aanhouden, zodat er meer voorspelbaarheid ontstaat?\"",
+        focusHealthy: true,
+        focusNarc: true
+      };
+    }
 
-    draftMessage.value =
-      "Jan: \"Ik ben boos en geraakt door wat je zegt. Wanneer jij zegt dat ik nooit iets goed doe, " +
-      "voel ik me machteloos en aangevallen. Ik wil dat we afspraken maken die voorspelbaar zijn voor de kinderen, " +
-      "zonder elkaar te verwijten dat alles altijd fout gaat.\"";
+    // Truus (andere ouder) WhatsApp
+    if (role === "andere-ouder" && channel === "whatsapp") {
+      return {
+        incoming:
+          "Jan via WhatsApp: \"Als jij weer op het laatste moment alles omgooit, raken de kinderen overstuur. Dit werkt zo niet.\"",
+        draft:
+          "Truus: \"Jij doet net alsof jij alles perfect doet. Jij bent degene die ALTIJD moeilijk doet over elk detail.\"",
+        focusHealthy: false,
+        focusNarc: false
+      };
+    }
+
+    // therapeut / neutraal in Signal groepsapp
+    if (role === "neutraal" && channel === "signal") {
+      return {
+        incoming:
+          "Truus in groepsapp: \"Ik ben je gedrag zat, jij verandert toch nooit.\"  \n" +
+          "Jan in groepsapp: \"Dit is precies wat ik bedoel, alles ligt altijd aan mij.\"",
+        draft:
+          "Therapeut: \"Ik hoor bij jullie allebei veel frustratie. Ik stel voor dat we nu even pauzeren met verwijten. " +
+          "Willen jullie ieder één voorbeeld delen van een moment waarop het wél beter ging tussen jullie, " +
+          "zodat we vanuit die situaties kunnen onderzoeken wat werkte?\"",
+        focusHealthy: false,
+        focusNarc: true
+      };
+    }
+
+    // therapeut in andere kanalen
+    if (role === "neutraal" && channel === "anders") {
+      return {
+        incoming:
+          "Jan per e-mail (cc Truus): \"Ik ben bang dat onze afspraken elke week veranderen. Dit voelt onveilig voor mij en de kinderen.\"",
+        draft:
+          "Therapeut: \"Dank voor je mail, Jan. Ik hoor dat voorspelbaarheid voor jou en de kinderen belangrijk is. " +
+          "In onze volgende sessie wil ik graag met jullie allebei drie concrete afspraken maken die minimaal een paar maanden gelden, " +
+          "zodat er meer rust ontstaat.\"",
+        focusHealthy: false,
+        focusNarc: true
+      };
+    }
+
+    // fallback demo
+    return {
+      incoming:
+        "Truus: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"",
+      draft:
+        "Jan: \"Wanneer afspraken last-minute veranderen, raak ik gestrest en maak ik me zorgen of het voor de kinderen wel voorspelbaar blijft. " +
+        "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\"",
+      focusHealthy: true,
+      focusNarc: true
+    };
+  }
+
+  function seedFormDemoFromSelection() {
+    const role = roleSelect.value;
+    const channel = channelSelect.value;
+    const scenario = getDemoScenario(role, channel);
+    incomingMessage.value = scenario.incoming || "";
+    draftMessage.value = scenario.draft || "";
+    focusHealthy.checked = !!scenario.focusHealthy;
+    focusNarc.checked = !!scenario.focusNarc;
+    buildAnalysisView(incomingMessage.value, draftMessage.value);
   }
 
   analyzeBtn.addEventListener("click", () => {
@@ -914,7 +994,7 @@
         ? "Gezonde ouder (Jan)"
         : role === "andere-ouder"
         ? "Andere ouder (Truus)"
-        : "Neutraal";
+        : "Therapeut / neutraal";
 
     const channelLabel = channelSelect.options[channelSelect.selectedIndex].text;
 
@@ -925,8 +1005,8 @@
       channelLabel,
       incoming:
         incoming ||
-        "(demo) Truus heeft een bericht gestuurd via " + channelLabel + " aan Jan.",
-      draft: draft || "(demo) Jan heeft nog geen conceptreactie ingevuld.",
+        "(demo) Er is een bericht binnengekomen via " + channelLabel + ".",
+      draft: draft || "(demo) Er is nog geen conceptreactie ingevuld.",
       selectedSuggestion: primarySuggestion,
       summarySuggestion: primarySuggestion,
       flags,
@@ -959,9 +1039,11 @@
     renderLog();
   });
 
+  roleSelect.addEventListener("change", seedFormDemoFromSelection);
+  channelSelect.addEventListener("change", seedFormDemoFromSelection);
+
   loadLog();
-  seedFormDemo();
-  buildAnalysisView(incomingMessage.value, draftMessage.value);
+  seedFormDemoFromSelection(); // initial demo + analyse
 </script>
 </body>
 </html>
