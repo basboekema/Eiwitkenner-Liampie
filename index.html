@@ -1,1 +1,948 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Relatie & Systeem Communicatie Coach</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-alt: #020617;
+      --card: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.12);
+      --danger: #f97373;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.4);
+      --shadow-subtle: 0 8px 24px rgba(15, 23, 42, 0.6);
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-sans);
+      background: radial-gradient(circle at top, #1d283a, #020617);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      padding: 18px 24px;
+      border-bottom: 1px solid rgba(15,23,42,0.9);
+      background: linear-gradient(120deg, rgba(15,23,42,0.95), rgba(15,23,42,0.7));
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    header h1 {
+      font-size: 1.35rem;
+      margin: 0 0 4px 0;
+      letter-spacing: 0.03em;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    main {
+      flex: 1;
+      padding: 18px 20px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #1f2937, #020617);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(56,189,248,0.12), transparent 60%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card h2 span.badge {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.4);
+      background: rgba(15,23,42,0.8);
+      color: var(--accent);
+    }
+
+    .card p.meta {
+      margin: 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+
+    select, textarea, input[type="text"] {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.86rem;
+      outline: none;
+      resize: vertical;
+      min-height: 38px;
+      box-shadow: var(--shadow-subtle);
+    }
+
+    textarea {
+      min-height: 68px;
+      max-height: 220px;
+    }
+
+    select:focus, textarea:focus, input[type="text"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .row > * {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #0b1120;
+      box-shadow: 0 12px 32px rgba(34, 197, 94, 0.5);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, opacity 0.1s;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 45px rgba(34, 197, 94, 0.7);
+      opacity: 0.96;
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 10px 26px rgba(34, 197, 94, 0.6);
+    }
+
+    .btn.secondary {
+      background: transparent;
+      color: var(--accent);
+      border-color: rgba(148, 163, 184, 0.7);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      background: rgba(15, 23, 42, 0.98);
+      box-shadow: 0 8px 26px rgba(15, 23, 42, 0.9);
+    }
+
+    .btn.small {
+      padding: 5px 10px;
+      font-size: 0.78rem;
+    }
+
+    .btn.danger {
+      border-color: rgba(248,113,113,0.6);
+      color: var(--danger);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .btn.danger:hover {
+      background: rgba(239,68,68,0.08);
+      box-shadow: 0 6px 18px rgba(239,68,68,0.4);
+    }
+
+    .pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .pill {
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      border: 1px solid rgba(148,163,184,0.4);
+      color: var(--muted);
+    }
+
+    .pill.primary {
+      border-color: rgba(56,189,248,0.6);
+      color: var(--accent);
+      background: rgba(15,23,42,0.7);
+    }
+
+    .section-divider {
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      margin: 6px 0;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.84rem;
+    }
+
+    .suggestion-block {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: var(--radius-md);
+      padding: 8px 9px;
+      border: 1px solid rgba(75,85,99,0.8);
+    }
+
+    .suggestion-block strong {
+      font-size: 0.82rem;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    .chip {
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+    }
+
+    .chip.flag {
+      border-color: rgba(248,113,113,0.7);
+      color: var(--danger);
+      background: rgba(127,29,29,0.25);
+    }
+
+    .highlight {
+      background: rgba(248, 113, 113, 0.12);
+      border-radius: 4px;
+      padding: 0 2px;
+      border-bottom: 1px dashed rgba(248, 113, 113, 0.8);
+    }
+
+    .small-label {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .log-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .log-item {
+      border-radius: 12px;
+      padding: 7px 9px;
+      border: 1px solid rgba(55,65,81,0.9);
+      background: rgba(15,23,42,0.98);
+      font-size: 0.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .log-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .log-role {
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(56,189,248,0.4);
+      color: var(--accent);
+    }
+
+    .log-channel {
+      font-size: 0.7rem;
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    .log-body {
+      white-space: pre-wrap;
+      color: #e5e7eb;
+    }
+
+    .log-meta {
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .notice {
+      font-size: 0.72rem;
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px dashed rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.78rem;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      width: 30px;
+      height: 16px;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Communicatie Coach voor Relatie- & Systeemtherapie</h1>
+  <p>Analyseer berichten, vermijd escalatie, bouw een logboek op en oefen gezondere communicatie.</p>
+</header>
+
+<main>
+  <!-- LINKERKANT: ANALYSE + COACHING -->
+  <section class="card">
+    <div class="card-inner">
+      <div>
+        <h2>
+          Analyse & Coach
+          <span class="badge">Live feedback</span>
+        </h2>
+        <p class="meta">
+          Vul het bericht van de ander en jouw conceptreactie in. De coach markeert risico-woorden
+          en doet alternatieve voorstellen.
+        </p>
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="roleSelect">Ik schrijf als</label>
+          <select id="roleSelect">
+            <option value="gezonde-ouder">Gezonde ouder / ouder die hulp zoekt</option>
+            <option value="andere-ouder">Andere ouder (mogelijk met sterke narcistische trekken)</option>
+            <option value="neutraal">Neutrale deelnemer / therapeut</option>
+          </select>
+        </div>
+        <div>
+          <label for="channelSelect">Kanaal (fictieve koppeling)</label>
+          <select id="channelSelect">
+            <option value="whatsapp">WhatsApp</option>
+            <option value="signal">Signal</option>
+            <option value="telegram">Telegram</option>
+            <option value="anders">Anders / e-mail</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div>
+        <label for="incomingMessage">Laatste bericht van de ander</label>
+        <textarea id="incomingMessage" placeholder="Plak hier het bericht waar je op wilt reageren..."></textarea>
+      </div>
+
+      <div>
+        <label for="draftMessage">Mijn conceptreactie</label>
+        <textarea id="draftMessage" placeholder="Typ hier wat je eigenlijk wilt sturen..."></textarea>
+      </div>
+
+      <div class="row">
+        <div class="toggle-row">
+          <span class="small-label">Coach tips voor gezonde ouder benadrukken</span>
+          <input type="checkbox" id="focusHealthy" checked />
+        </div>
+        <div class="toggle-row">
+          <span class="small-label">Perspectiefwissel voor andere ouder tonen</span>
+          <input type="checkbox" id="focusNarc" />
+        </div>
+      </div>
+
+      <div class="row" style="align-items:center; margin-top:4px;">
+        <button class="btn" id="analyzeBtn">
+          <span>Analyseer & geef suggesties</span>
+        </button>
+        <button class="btn secondary" id="saveLogBtn">
+          Logboek: sla huidige interactie op
+        </button>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="suggestions" id="analysisOutput">
+        <div class="notice">
+          Tip: begin altijd met je conceptreactie te plakken/typen en druk dan op
+          “Analyseer & geef suggesties”.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECHTERKANT: LOGBOEK + PATRONEN -->
+  <section class="card">
+    <div class="card-inner">
+      <div>
+        <h2>
+          Logboek & Patronen
+          <span class="badge">Local only</span>
+        </h2>
+        <p class="meta">
+          Alle items blijven alleen in deze browser (localStorage). Handig als geheugensteun
+          richting hulpverlening of systeemtherapie.
+        </p>
+      </div>
+
+      <div class="row" style="align-items:center;">
+        <div class="row">
+          <button class="btn small secondary" id="exportBtn">Exporteer logboek (JSON)</button>
+          <button class="btn small danger" id="clearLogBtn">Wis logboek in deze browser</button>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="log-list" id="logList"></div>
+      <div id="logEmptyNotice" class="notice">
+        Nog geen items in het logboek. Na een analyse kun je met “Logboek: sla huidige interactie op”
+        de situatie vastleggen.
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Element referenties
+  const roleSelect = document.getElementById("roleSelect");
+  const channelSelect = document.getElementById("channelSelect");
+  const incomingMessage = document.getElementById("incomingMessage");
+  const draftMessage = document.getElementById("draftMessage");
+  const focusHealthy = document.getElementById("focusHealthy");
+  const focusNarc = document.getElementById("focusNarc");
+  const analyzeBtn = document.getElementById("analyzeBtn");
+  const saveLogBtn = document.getElementById("saveLogBtn");
+  const analysisOutput = document.getElementById("analysisOutput");
+  const logList = document.getElementById("logList");
+  const logEmptyNotice = document.getElementById("logEmptyNotice");
+  const exportBtn = document.getElementById("exportBtn");
+  const clearLogBtn = document.getElementById("clearLogBtn");
+
+  // Simpele lijsten met “risico”-woorden (Nederlands, globaal)
+  const absoluteWords = ["altijd", "nooit", "helemaal nooit", "constant", "iedere keer", "nooit goed"];
+  const attackPhrases = [
+    "jij bent",
+    "jij doet",
+    "jij maakt alles kapot",
+    "jij denkt alleen aan jezelf",
+    "jij luistert nooit",
+    "schuldig",
+    "egoïst",
+    "narcist",
+    "idioen",
+    "idioot",
+    "gek",
+    "ziek in je hoofd"
+  ];
+  const escalationWords = [
+    "klaar met jou",
+    "ik ben er klaar mee",
+    "ik ben klaar met dit",
+    "je krijgt niks meer",
+    "ik ga naar de advocaat",
+    "ik ben je zat"
+  ];
+
+  // Logboek in localStorage
+  const STORAGE_KEY = "relatie_communicatie_logboek_v1";
+  let logItems = [];
+
+  function loadLog() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      logItems = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      logItems = [];
+    }
+    renderLog();
+  }
+
+  function saveLogToStorage() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logItems));
+    } catch (e) {
+      console.warn("Opslaan in localStorage mislukt", e);
+    }
+  }
+
+  function addLogItem(entry) {
+    logItems.unshift(entry);
+    saveLogToStorage();
+    renderLog();
+  }
+
+  function renderLog() {
+    logList.innerHTML = "";
+    if (!logItems.length) {
+      logEmptyNotice.style.display = "block";
+      return;
+    }
+    logEmptyNotice.style.display = "none";
+
+    logItems.forEach((item, idx) => {
+      const div = document.createElement("div");
+      div.className = "log-item";
+
+      const header = document.createElement("div");
+      header.className = "log-item-header";
+
+      const roleSpan = document.createElement("span");
+      roleSpan.className = "log-role";
+      roleSpan.textContent = item.roleLabel || item.role || "Onbekend";
+
+      const rightMeta = document.createElement("div");
+      rightMeta.style.display = "flex";
+      rightMeta.style.alignItems = "center";
+      rightMeta.style.gap = "6px";
+
+      const channel = document.createElement("span");
+      channel.className = "log-channel";
+      channel.textContent = item.channelLabel || item.channel || "kanaal";
+      rightMeta.appendChild(channel);
+
+      const timeSpan = document.createElement("span");
+      timeSpan.style.fontSize = "0.7rem";
+      timeSpan.style.color = "#6b7280";
+      timeSpan.textContent = new Date(item.createdAt).toLocaleString();
+      rightMeta.appendChild(timeSpan);
+
+      header.appendChild(roleSpan);
+      header.appendChild(rightMeta);
+
+      const bodyIncoming = document.createElement("div");
+      bodyIncoming.className = "log-body";
+      bodyIncoming.textContent = item.incoming
+        ? "Ander: " + item.incoming
+        : "(geen origineel bericht ingevuld)";
+
+      const bodyDraft = document.createElement("div");
+      bodyDraft.className = "log-body";
+      bodyDraft.textContent = "Mijn concept: " + (item.draft || "(leeg)");
+
+      const bodySuggestion = document.createElement("div");
+      bodySuggestion.className = "log-body";
+      bodySuggestion.style.borderLeft = "2px solid rgba(56,189,248,0.7)";
+      bodySuggestion.style.paddingLeft = "6px";
+      bodySuggestion.style.marginTop = "4px";
+      bodySuggestion.textContent =
+        item.selectedSuggestion ||
+        (item.summarySuggestion || "Geen specifieke suggestie opgeslagen.");
+
+      const flags = document.createElement("div");
+      flags.className = "log-meta";
+      if (item.flags && item.flags.length) {
+        flags.textContent = "Signalen: " + item.flags.join(", ");
+      } else {
+        flags.textContent = "Signalen: geen opvallende escalatie-woorden gedetecteerd.";
+      }
+
+      const metaCoach = document.createElement("div");
+      metaCoach.className = "log-meta";
+      metaCoach.textContent =
+        "Coachfocus: " +
+        (item.focusHealthy ? "gezonde ouder " : "") +
+        (item.focusNarc ? " + perspectiefwissel andere ouder" : "");
+
+      div.appendChild(header);
+      div.appendChild(bodyIncoming);
+      div.appendChild(bodyDraft);
+      div.appendChild(bodySuggestion);
+      div.appendChild(flags);
+      div.appendChild(metaCoach);
+
+      logList.appendChild(div);
+    });
+  }
+
+  // Eenvoudige helper om HTML te escapen
+  function escapeHtml(str) {
+    if (!str) return "";
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  // Highlight bepaalde woorden in een tekst
+  function highlightTriggers(text, triggers) {
+    let result = escapeHtml(text);
+    triggers.forEach((w) => {
+      if (!w.trim()) return;
+      const pattern = new RegExp("\\b" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "gi");
+      result = result.replace(pattern, (match) => `<span class="highlight">${match}</span>`);
+    });
+    return result;
+  }
+
+  function classifyDraft(text) {
+    const lower = text.toLowerCase();
+    const flags = [];
+
+    absoluteWords.forEach((w) => {
+      if (lower.includes(w)) flags.push("Absoluut taalgebruik (“" + w + "”)");
+    });
+    attackPhrases.forEach((w) => {
+      if (lower.includes(w)) flags.push("Aanval / beschuldiging (“" + w + "”)");
+    });
+    escalationWords.forEach((w) => {
+      if (lower.includes(w)) flags.push("Escalatie / dreiging (“" + w + "”)");
+    });
+
+    // Capslock-check: grove indicatie
+    const capsRatio =
+      text.replace(/[^A-Z]/g, "").length / Math.max(text.replace(/[^A-Za-z]/g, "").length, 1);
+    if (capsRatio > 0.4 && text.length > 8) {
+      flags.push("Veel hoofdletters (kan als schreeuwen overkomen)");
+    }
+
+    return flags;
+  }
+
+  function generateSuggestions(draft, role, opts) {
+    const suggestions = [];
+    const trimmed = draft.trim();
+
+    // Basis herformulering in ik-vorm (algemeen voorstel)
+    suggestions.push({
+      title: "Meer in ik-taal en concreet gedrag",
+      text:
+        "Wanneer [concreet gedrag van de ander], dan voel ik mij [gevoel] en ik heb nodig dat [concrete behoefte]. " +
+        "Zou je [specifiek verzoek] willen doen, zodat we dit voor de kinderen rustiger houden?",
+    });
+
+    // Minder beschuldigend
+    suggestions.push({
+      title: "Van jij-beschuldiging naar gezamenlijke focus",
+      text:
+        "Ik merk dat deze situatie mij veel spanning geeft. Ik wil voorkomen dat we in verwijten blijven hangen. " +
+        "Kunnen we samen kijken naar een oplossing waarin zowel jouw als mijn zorgen een plek krijgen?",
+    });
+
+    // Extra focus voor gezonde ouder
+    if (opts.focusHealthy) {
+      suggestions.push({
+        title: "Gezonde ouder: begrenzen zonder escaleren",
+        text:
+          "Ik begrijp dat jij dit anders ziet. Voor mij is het belangrijk dat we afspraken maken die voorspelbaar zijn voor de kinderen. " +
+          "Dit is voor mij de grens: [beschrijf kort en concreet]. Ik blijf hierover rustig, maar ik wijk daar niet van af.",
+      });
+    }
+
+    // Perspectief op mogelijke narcistische trekken (zonder te diagnosticeren)
+    if (opts.focusNarc) {
+      suggestions.push({
+        title: "Perspectiefwisseling: erkenning + grens",
+        text:
+          "Ik zie dat het voor jou ook een lastig onderwerp is en dat je je mogelijk niet gehoord voelt. " +
+          "Tegelijk heb ik mijn eigen grenzen en behoeften. Ik wil jouw kant horen, maar niet ten koste van respect naar mij toe.",
+      });
+    }
+
+    // Specifiek als er dreiging/advocaat in de draft zit
+    const lower = draft.toLowerCase();
+    if (lower.includes("advocaat") || lower.includes("rechter")) {
+      suggestions.push({
+        title: "Juridische toon verzachten (als het kan)",
+        text:
+          "Ik wil liever voorkomen dat we meteen alles juridisch maken. " +
+          "Zullen we eerst proberen om met hulp van onze therapeut / begeleider dit gesprek te voeren, zodat we beide beter gehoord worden?",
+      });
+    }
+
+    // Indien concept erg leeg is, geef startzin
+    if (!trimmed) {
+      suggestions.push({
+        title: "Startzin als je vastloopt",
+        text:
+          "Ik vind het lastig om dit rustig te verwoorden, dus ik probeer het stap voor stap: " +
+          "voor mij is er iets belangrijk waar ik met je over wil afstemmen, omdat het invloed heeft op de kinderen.",
+      });
+    }
+
+    return suggestions;
+  }
+
+  function buildAnalysisView(incoming, draft) {
+    const role = roleSelect.value;
+    const roleLabel =
+      role === "gezonde-ouder"
+        ? "Gezonde ouder / hulpzoekende ouder"
+        : role === "andere-ouder"
+        ? "Andere ouder"
+        : "Neutraal";
+
+    const flags = classifyDraft(draft || "");
+    const highlightedDraft = highlightTriggers(
+      draft || "",
+      absoluteWords.concat(attackPhrases, escalationWords)
+    );
+
+    const suggestions = generateSuggestions(draft || "", role, {
+      focusHealthy: focusHealthy.checked,
+      focusNarc: focusNarc.checked,
+    });
+
+    analysisOutput.innerHTML = "";
+
+    // Samenvatting blok
+    const summaryBlock = document.createElement("div");
+    summaryBlock.className = "suggestion-block";
+    summaryBlock.innerHTML =
+      "<strong>Samenvatting analyse</strong>" +
+      `<div class="chips">
+        <span class="chip">Rol: ${escapeHtml(roleLabel)}</span>
+        <span class="chip">Kanaal: ${escapeHtml(channelSelect.options[channelSelect.selectedIndex].text)}</span>
+      </div>` +
+      `<p class="small-label" style="margin-top:4px;">Signalen in jouw conceptreactie:</p>`;
+
+    const chips = document.createElement("div");
+    chips.className = "chips";
+    if (flags.length) {
+      flags.forEach((f) => {
+        const c = document.createElement("span");
+        c.className = "chip flag";
+        c.textContent = f;
+        chips.appendChild(c);
+      });
+    } else {
+      const c = document.createElement("span");
+      c.className = "chip";
+      c.textContent = "Geen sterke escalatie-signalen gevonden.";
+      chips.appendChild(c);
+    }
+    summaryBlock.appendChild(chips);
+    analysisOutput.appendChild(summaryBlock);
+
+    // Concept-reactie met highlight
+    const draftBlock = document.createElement("div");
+    draftBlock.className = "suggestion-block";
+    draftBlock.innerHTML =
+      "<strong>Jouw conceptreactie (gemarkeerd)</strong>" +
+      `<p class="small-label">Gevonden risico-woorden zijn rood gemarkeerd.</p>` +
+      `<div style="margin-top:4px; font-size:0.84rem; line-height:1.4;">${
+        highlightedDraft || "<em>(geen tekst)</em>"
+      }</div>`;
+    analysisOutput.appendChild(draftBlock);
+
+    // Inkomend bericht (optioneel)
+    if (incoming && incoming.trim()) {
+      const incomingBlock = document.createElement("div");
+      incomingBlock.className = "suggestion-block";
+      incomingBlock.innerHTML =
+        "<strong>Laatste bericht van de ander</strong>" +
+        `<div style="margin-top:4px; font-size:0.84rem; line-height:1.4;">${escapeHtml(
+          incoming
+        )}</div>`;
+      analysisOutput.appendChild(incomingBlock);
+    }
+
+    // Suggesties per blok
+    suggestions.forEach((sugg, index) => {
+      const sBlock = document.createElement("div");
+      sBlock.className = "suggestion-block";
+      sBlock.innerHTML =
+        `<strong>${escapeHtml(sugg.title)}</strong>` +
+        `<p style="margin:4px 0 6px; font-size:0.84rem; line-height:1.4;">${escapeHtml(
+          sugg.text
+        )}</p>`;
+
+      const btn = document.createElement("button");
+      btn.className = "btn small secondary";
+      btn.textContent = "Gebruik deze formulering in mijn concept";
+      btn.addEventListener("click", () => {
+        draftMessage.value = sugg.text;
+        // Her-analyseer met nieuwe tekst
+        buildAnalysisView(incomingMessage.value, draftMessage.value);
+      });
+      sBlock.appendChild(btn);
+
+      analysisOutput.appendChild(sBlock);
+    });
+
+    // Klein voetnootje
+    const footerNotice = document.createElement("div");
+    footerNotice.className = "notice";
+    footerNotice.textContent =
+      "Deze tool doet géén diagnose en vervangt geen therapeut. Gebruik het als ondersteuning; " +
+      "belangrijke keuzes altijd met een professional afstemmen.";
+    analysisOutput.appendChild(footerNotice);
+
+    // Return data voor logboek
+    return {
+      flags,
+      primarySuggestion: suggestions.length ? suggestions[0].text : "",
+    };
+  }
+
+  // Event-handlers
+  analyzeBtn.addEventListener("click", () => {
+    const incoming = incomingMessage.value || "";
+    const draft = draftMessage.value || "";
+    buildAnalysisView(incoming, draft);
+  });
+
+  saveLogBtn.addEventListener("click", () => {
+    const incoming = incomingMessage.value || "";
+    const draft = draftMessage.value || "";
+
+    const { flags, primarySuggestion } = buildAnalysisView(incoming, draft);
+
+    const role = roleSelect.value;
+    const roleLabel =
+      role === "gezonde-ouder"
+        ? "Gezonde ouder / hulpzoekende ouder"
+        : role === "andere-ouder"
+        ? "Andere ouder"
+        : "Neutraal";
+
+    const channelLabel = channelSelect.options[channelSelect.selectedIndex].text;
+
+    addLogItem({
+      role,
+      roleLabel,
+      channel: channelSelect.value,
+      channelLabel,
+      incoming,
+      draft,
+      selectedSuggestion: primarySuggestion,
+      summarySuggestion: primarySuggestion,
+      flags,
+      focusHealthy: focusHealthy.checked,
+      focusNarc: focusNarc.checked,
+      createdAt: new Date().toISOString(),
+    });
+  });
+
+  exportBtn.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(logItems, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "communicatie-logboek.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  });
+
+  clearLogBtn.addEventListener("click", () => {
+    if (!confirm("Weet je zeker dat je het volledige logboek in deze browser wilt wissen?")) {
+      return;
+    }
+    logItems = [];
+    saveLogToStorage();
+    renderLog();
+  });
+
+  // Init
+  loadLog();
+  // eventueel een minimale demo-analyse bij start (optioneel uit):
+  // buildAnalysisView("", "");
+</script>
+</body>
+</html>
 
