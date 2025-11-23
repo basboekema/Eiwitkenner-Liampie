@@ -231,50 +231,6 @@
       box-shadow: 0 6px 18px rgba(239,68,68,0.4);
     }
 
-    .pill-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .pill {
-      padding: 2px 8px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      border: 1px solid rgba(148,163,184,0.4);
-      color: var(--muted);
-    }
-
-    .pill.primary {
-      border-color: rgba(56,189,248,0.6);
-      color: var(--accent);
-      background: rgba(15,23,42,0.7);
-    }
-
-    .section-divider {
-      border-top: 1px dashed rgba(148, 163, 184, 0.4);
-      margin: 6px 0;
-    }
-
-    .suggestions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 0.84rem;
-    }
-
-    .suggestion-block {
-      background: rgba(15, 23, 42, 0.98);
-      border-radius: var(--radius-md);
-      padding: 8px 9px;
-      border: 1px solid rgba(75,85,99,0.8);
-    }
-
-    .suggestion-block strong {
-      font-size: 0.82rem;
-    }
-
     .chips {
       display: flex;
       flex-wrap: wrap;
@@ -296,16 +252,23 @@
       background: rgba(127,29,29,0.25);
     }
 
-    .highlight {
-      background: rgba(248, 113, 113, 0.12);
-      border-radius: 4px;
-      padding: 0 2px;
-      border-bottom: 1px dashed rgba(248, 113, 113, 0.8);
-    }
-
     .small-label {
       font-size: 0.76rem;
       color: var(--muted);
+    }
+
+    .suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.84rem;
+    }
+
+    .suggestion-block {
+      background: rgba(15, 23, 42, 0.98);
+      border-radius: var(--radius-md);
+      padding: 8px 9px;
+      border: 1px solid rgba(75,85,99,0.8);
     }
 
     .log-list {
@@ -383,6 +346,11 @@
       height: 16px;
       accent-color: var(--accent);
       cursor: pointer;
+    }
+
+    .section-divider {
+      border-top: 1px dashed rgba(148, 163, 184, 0.4);
+      margin: 6px 0;
     }
   </style>
 </head>
@@ -501,7 +469,6 @@
 </main>
 
 <script>
-  // Element referenties
   const roleSelect = document.getElementById("roleSelect");
   const channelSelect = document.getElementById("channelSelect");
   const incomingMessage = document.getElementById("incomingMessage");
@@ -516,7 +483,6 @@
   const exportBtn = document.getElementById("exportBtn");
   const clearLogBtn = document.getElementById("clearLogBtn");
 
-  // Simpele lijsten met “risico”-woorden (Nederlands, globaal)
   const absoluteWords = ["altijd", "nooit", "helemaal nooit", "constant", "iedere keer", "nooit goed"];
   const attackPhrases = [
     "jij bent",
@@ -541,11 +507,9 @@
     "ik ben je zat"
   ];
 
-  // Logboek in localStorage
   const STORAGE_KEY = "relatie_communicatie_logboek_v1";
   let logItems = [];
 
-  // Helper om HTML te escapen
   function escapeHtml(str) {
     if (!str) return "";
     return str
@@ -554,17 +518,6 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
       .replace(/'/g, "&#039;");
-  }
-
-  // Highlight bepaalde woorden in een tekst
-  function highlightTriggers(text, triggers) {
-    let result = escapeHtml(text);
-    triggers.forEach((w) => {
-      if (!w.trim()) return;
-      const pattern = new RegExp("\\b" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "gi");
-      result = result.replace(pattern, (match) => `<span class="highlight">${match}</span>`);
-    });
-    return result;
   }
 
   function classifyDraft(text) {
@@ -581,9 +534,9 @@
       if (lower.includes(w)) flags.push("Escalatie / dreiging (“" + w + "”)");
     });
 
-    // Capslock-check: grove indicatie
-    const capsRatio =
-      text.replace(/[^A-Z]/g, "").length / Math.max(text.replace(/[^A-Za-z]/g, "").length, 1);
+    const letters = text.replace(/[^A-Za-z]/g, "");
+    const caps = text.replace(/[^A-Z]/g, "");
+    const capsRatio = caps.length / Math.max(letters.length, 1);
     if (capsRatio > 0.4 && text.length > 8) {
       flags.push("Veel hoofdletters (kan als schreeuwen overkomen)");
     }
@@ -659,11 +612,6 @@
         : "Neutraal";
 
     const flags = classifyDraft(draft || "");
-    const highlightedDraft = highlightTriggers(
-      draft || "",
-      absoluteWords.concat(attackPhrases, escalationWords)
-    );
-
     const suggestions = generateSuggestions(draft || "", role, {
       focusHealthy: focusHealthy.checked,
       focusNarc: focusNarc.checked
@@ -677,7 +625,9 @@
       "<strong>Samenvatting analyse</strong>" +
       `<div class="chips">
         <span class="chip">Rol: ${escapeHtml(roleLabel)}</span>
-        <span class="chip">Kanaal: ${escapeHtml(channelSelect.options[channelSelect.selectedIndex].text)}</span>
+        <span class="chip">Kanaal: ${escapeHtml(
+          channelSelect.options[channelSelect.selectedIndex].text
+        )}</span>
       </div>` +
       `<p class="small-label" style="margin-top:4px;">Signalen in jouw conceptreactie:</p>`;
 
@@ -698,27 +648,6 @@
     }
     summaryBlock.appendChild(chips);
     analysisOutput.appendChild(summaryBlock);
-
-    const draftBlock = document.createElement("div");
-    draftBlock.className = "suggestion-block";
-    draftBlock.innerHTML =
-      "<strong>Jouw conceptreactie (gemarkeerd)</strong>" +
-      `<p class="small-label">Gevonden risico-woorden zijn rood gemarkeerd.</p>` +
-      `<div style="margin-top:4px; font-size:0.84rem; line-height:1.4;">${
-        highlightedDraft || "<em>(geen tekst)</em>"
-      }</div>`;
-    analysisOutput.appendChild(draftBlock);
-
-    if (incoming && incoming.trim()) {
-      const incomingBlock = document.createElement("div");
-      incomingBlock.className = "suggestion-block";
-      incomingBlock.innerHTML =
-        "<strong>Laatste bericht van de ander (Truus)</strong>" +
-        `<div style="margin-top:4px; font-size:0.84rem; line-height:1.4;">${escapeHtml(
-          incoming
-        )}</div>`;
-      analysisOutput.appendChild(incomingBlock);
-    }
 
     suggestions.forEach((sugg) => {
       const sBlock = document.createElement("div");
@@ -752,22 +681,6 @@
       flags,
       primarySuggestion: suggestions.length ? suggestions[0].text : ""
     };
-  }
-
-  function loadLog() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      logItems = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      logItems = [];
-    }
-
-    // Als er nog geen log-items zijn, vul met demo-data over Jan & Truus
-    if (!logItems || !logItems.length) {
-      seedDemoLog();
-      saveLogToStorage();
-    }
-    renderLog();
   }
 
   function saveLogToStorage() {
@@ -867,11 +780,9 @@
     });
   }
 
-  // Demo-logboek met Jan & Truus
   function seedDemoLog() {
     const demoEntries = [];
 
-    // 1: vrij heftige escalatie van Jan (om te laten zien wat er gedetecteerd wordt)
     const incoming1 =
       "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
     const draft1 =
@@ -898,7 +809,6 @@
       createdAt: new Date().toISOString()
     });
 
-    // 2: meer gereguleerde reactie van Jan na coaching
     const incoming2 =
       "Truus via WhatsApp: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"";
     const draft2 =
@@ -926,7 +836,6 @@
       createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
     });
 
-    // 3: voorbeeld waarin therapeut of neutrale rol meekijkt
     const incoming3 =
       "Truus: \"Ik ben je gedrag zat, jij verandert toch nooit.\" (groepchat ‘Co-ouderschap Jan & Truus & therapeut’)";
     const draft3 =
@@ -957,14 +866,27 @@
     logItems = demoEntries;
   }
 
+  function loadLog() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      logItems = raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      logItems = [];
+    }
+
+    if (!logItems || !logItems.length) {
+      seedDemoLog();
+      saveLogToStorage();
+    }
+    renderLog();
+  }
+
   function seedFormDemo() {
-    // Jan als gezonde ouder op WhatsApp
     roleSelect.value = "gezonde-ouder";
     channelSelect.value = "whatsapp";
     focusHealthy.checked = true;
     focusNarc.checked = true;
 
-    // Demo-tekst in de velden
     incomingMessage.value =
       "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
 
@@ -974,7 +896,6 @@
       "zonder elkaar te verwijten dat alles altijd fout gaat.\"";
   }
 
-  // Event-handlers
   analyzeBtn.addEventListener("click", () => {
     const incoming = incomingMessage.value || "";
     const draft = draftMessage.value || "";
@@ -1038,7 +959,6 @@
     renderLog();
   });
 
-  // Init: demo-data + directe analyse van Jan & Truus
   loadLog();
   seedFormDemo();
   buildAnalysisView(incomingMessage.value, draftMessage.value);
