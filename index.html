@@ -21,9 +21,7 @@
       --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -68,9 +66,7 @@
     }
 
     @media (max-width: 900px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      main { grid-template-columns: minmax(0, 1fr); }
     }
 
     .card {
@@ -165,11 +161,7 @@
       gap: 8px;
       flex-wrap: wrap;
     }
-
-    .row > * {
-      flex: 1;
-      min-width: 0;
-    }
+    .row > * { flex: 1; min-width: 0; }
 
     .btn {
       display: inline-flex;
@@ -207,14 +199,9 @@
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
     }
 
-    .btn.secondary:hover {
-      background: #f0fbfb;
-    }
+    .btn.secondary:hover { background: #f0fbfb; }
 
-    .btn.small {
-      padding: 5px 10px;
-      font-size: 0.78rem;
-    }
+    .btn.small { padding: 5px 10px; font-size: 0.78rem; }
 
     .btn.danger {
       border-color: rgba(229, 57, 53, 0.4);
@@ -223,9 +210,7 @@
       box-shadow: 0 2px 8px rgba(229, 57, 53, 0.15);
     }
 
-    .btn.danger:hover {
-      background: #fef4f4;
-    }
+    .btn.danger:hover { background: #fef4f4; }
 
     .chips {
       display: flex;
@@ -443,10 +428,11 @@
       <div>
         <h2>
           Logboek & Patronen
-          <span class="badge">Demo data</span>
+          <span class="badge">Leeg bij start</span>
         </h2>
         <p class="meta">
-          Voorbeelditems met Jan, Truus en de therapeut zijn vooraf gevuld. Het logboek blijft lokaal in deze browser (localStorage).
+          Hier zie je alleen het laatste bericht van de ander en de gekozen coach-formulering (met blauwe accentbalk).
+          Het logboek blijft lokaal in deze browser (localStorage).
         </p>
       </div>
 
@@ -462,7 +448,7 @@
       <div class="log-list" id="logList"></div>
       <div id="logEmptyNotice" class="notice">
         Nog geen items in het logboek. Na een analyse kun je met “Logboek: sla huidige interactie op”
-        de situatie vastleggen.
+        één interactie vastleggen (laatste bericht + gekozen coach-formulering).
       </div>
     </div>
   </section>
@@ -664,7 +650,7 @@
       btn.textContent = "Gebruik deze formulering in mijn concept";
       btn.addEventListener("click", () => {
         draftMessage.value = sugg.text;
-        lastSelectedSuggestion = sugg.text;          // Alleen hier zetten
+        lastSelectedSuggestion = sugg.text;          // alleen hier setten
         buildAnalysisView(incomingMessage.value, draftMessage.value);
       });
       sBlock.appendChild(btn);
@@ -678,9 +664,6 @@
       "Deze tool doet géén diagnose en vervangt geen therapeut. Gebruik het als ondersteuning; " +
       "belangrijke keuzes altijd met een professional afstemmen.";
     analysisOutput.appendChild(footerNotice);
-
-    // flags worden gebruikt in save-handler
-    return { flags };
   }
 
   function saveLogToStorage() {
@@ -735,134 +718,38 @@
       header.appendChild(roleSpan);
       header.appendChild(rightMeta);
 
+      // Alleen laatste bericht van de ander
       const bodyIncoming = document.createElement("div");
       bodyIncoming.className = "log-body";
       bodyIncoming.textContent = item.incoming
-        ? item.incoming
-        : "(geen origineel bericht ingevuld)";
+        ? "Laatste bericht van de ander: " + item.incoming
+        : "Laatste bericht van de ander: (niet ingevuld)";
 
-      const bodyDraft = document.createElement("div");
-      bodyDraft.className = "log-body";
-      bodyDraft.textContent = item.draft || "(geen concept opgeslagen)";
-
+      // Alleen de gekozen coach-formulering met "blauwe arcering" ervoor
       const bodySuggestion = document.createElement("div");
       bodySuggestion.className = "log-body";
-      bodySuggestion.style.borderLeft = "3px solid rgba(0,166,166,0.55)";
-      bodySuggestion.style.paddingLeft = "6px";
+      bodySuggestion.style.borderLeft = "4px solid rgba(0,166,166,0.9)";
+      bodySuggestion.style.paddingLeft = "8px";
       bodySuggestion.style.marginTop = "4px";
+      bodySuggestion.style.background = "#f0fbfb";
+      bodySuggestion.style.borderRadius = "6px";
       bodySuggestion.textContent =
-        item.selectedSuggestion ||
-        "Geen specifieke coach-suggestie geselecteerd / opgeslagen.";
-
-      const flags = document.createElement("div");
-      flags.className = "log-meta";
-      if (item.flags && item.flags.length) {
-        flags.textContent = "Signalen: " + item.flags.join(", ");
-      } else {
-        flags.textContent = "Signalen: geen opvallende escalatie-woorden gedetecteerd.";
-      }
-
-      const metaCoach = document.createElement("div");
-      metaCoach.className = "log-meta";
-      metaCoach.textContent =
-        "Coachfocus: " +
-        (item.focusHealthy ? "gezonde ouder " : "") +
-        (item.focusNarc ? "+ perspectiefwissel andere ouder" : "");
+        item.selectedSuggestion && item.selectedSuggestion.trim()
+          ? item.selectedSuggestion
+          : "Geen coach-formulering geselecteerd in deze interactie.";
 
       div.appendChild(header);
       div.appendChild(bodyIncoming);
-      div.appendChild(bodyDraft);
       div.appendChild(bodySuggestion);
-      div.appendChild(flags);
-      div.appendChild(metaCoach);
 
       logList.appendChild(div);
     });
   }
 
-  function seedDemoLog() {
-    const demoEntries = [];
-
-    const incoming1 =
-      "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"";
-    const draft1 =
-      "Jan: \"Jij bent degene die altijd alles kapot maakt. Ik ben er KLAAR mee en ik ga wel naar de advocaat, jij luistert toch nooit.\"";
-
-    const flags1 = classifyDraft(draft1);
-
-    demoEntries.push({
-      role: "gezonde-ouder",
-      roleLabel: "Gezonde ouder (Jan)",
-      channel: "whatsapp",
-      channelLabel: "WhatsApp",
-      incoming: incoming1,
-      draft: draft1,
-      selectedSuggestion: "",
-      flags: flags1,
-      focusHealthy: true,
-      focusNarc: false,
-      createdAt: new Date().toISOString()
-    });
-
-    const incoming2 =
-      "Truus via WhatsApp: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"";
-    const draft2 =
-      "Jan: \"Wanneer afspraken last-minute veranderen, raak ik gestrest en maak ik me zorgen of het voor de kinderen wel voorspelbaar blijft. " +
-      "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\"";
-
-    const flags2 = classifyDraft(draft2);
-
-    demoEntries.push({
-      role: "gezonde-ouder",
-      roleLabel: "Gezonde ouder (Jan)",
-      channel: "whatsapp",
-      channelLabel: "WhatsApp",
-      incoming: incoming2,
-      draft: draft2,
-      selectedSuggestion: "",
-      flags: flags2,
-      focusHealthy: true,
-      focusNarc: true,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
-    });
-
-    const incoming3 =
-      "Truus: \"Ik ben je gedrag zat, jij verandert toch nooit.\" (Signal-groepsapp ‘Co-ouderschap Jan & Truus & therapeut’)";
-    const draft3 =
-      "Therapeut: \"Ik hoor dat je veel frustratie ervaart, Truus. Tegelijk zie ik bij Jan ook de wens om het anders te doen. " +
-      "Zullen we allebei één concreet voorbeeld noemen van wat wél werkte, zodat we daarop kunnen voortbouwen?\"";
-
-    const flags3 = classifyDraft(draft3);
-
-    demoEntries.push({
-      role: "neutraal",
-      roleLabel: "Therapeut / neutraal",
-      channel: "signal",
-      channelLabel: "Signal",
-      incoming: incoming3,
-      draft: draft3,
-      selectedSuggestion: "",
-      flags: flags3,
-      focusHealthy: false,
-      focusNarc: true,
-      createdAt: new Date(Date.now() - 1000 * 60 * 120).toISOString()
-    });
-
-    logItems = demoEntries;
-  }
-
   function loadLog() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      logItems = raw ? JSON.parse(raw) : [];
-    } catch (e) {
-      logItems = [];
-    }
-
-    if (!logItems || !logItems.length) {
-      seedDemoLog();
-      saveLogToStorage();
-    }
+    // Voor de demo altijd starten met een leeg logboek
+    logItems = [];
+    saveLogToStorage();
     renderLog();
   }
 
@@ -965,7 +852,7 @@
     const incoming = incomingMessage.value || "";
     const draft = draftMessage.value || "";
 
-    const flags = classifyDraft(draft || ""); // enkel voor signalen in log
+    const flags = classifyDraft(draft || ""); // alleen voor signalen (nu niet getoond, maar bruikbaar als je wilt uitbreiden)
     const selectedSuggestion = lastSelectedSuggestion || "";
 
     const role = roleSelect.value;
@@ -986,8 +873,7 @@
       incoming:
         incoming ||
         "(demo) Er is een bericht binnengekomen via " + channelLabel + ".",
-      draft: draft || "(demo) Er is nog geen conceptreactie ingevuld.",
-      selectedSuggestion,               // alléén wat jij hebt gekozen
+      selectedSuggestion,
       flags,
       focusHealthy: focusHealthy.checked,
       focusNarc: focusNarc.checked,
@@ -1021,8 +907,8 @@
   roleSelect.addEventListener("change", seedFormDemoFromSelection);
   channelSelect.addEventListener("change", seedFormDemoFromSelection);
 
-  loadLog();
-  seedFormDemoFromSelection(); // initial demo + analyse
+  loadLog();                 // leeg logboek
+  seedFormDemoFromSelection(); // demo-inhoud + analyse links
 </script>
 </body>
 </html>
