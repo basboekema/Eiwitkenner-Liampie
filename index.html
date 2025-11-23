@@ -1,952 +1,546 @@
 <!DOCTYPE html>
 <html lang="nl">
 <head>
-  <meta charset="UTF-8" />
-  <title>Relatie & Systeem Communicatie Coach - Demo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    :root {
-      --bg: #f3f5f7;
-      --card: #ffffff;
-      --accent: #00a6a6;
-      --accent-soft: rgba(0, 166, 166, 0.08);
-      --danger: #e53935;
-      --border: #d1d9e0;
-      --text: #102a43;
-      --muted: #6b7b8c;
-      --radius-lg: 16px;
-      --radius-md: 10px;
-      --shadow-soft: 0 14px 35px rgba(15, 23, 42, 0.08);
-      --shadow-subtle: 0 2px 8px rgba(15, 23, 42, 0.06);
-      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: var(--font-sans);
-      background: radial-gradient(circle at top, #e1edf3, #f3f5f7);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    header {
-      padding: 18px 24px;
-      border-bottom: 1px solid rgba(209, 217, 224, 0.8);
-      background: linear-gradient(120deg, #ffffff, #eef5f7);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    header h1 {
-      font-size: 1.4rem;
-      margin: 0 0 4px 0;
-      letter-spacing: 0.02em;
-    }
-
-    header p {
-      margin: 0;
-      font-size: 0.9rem;
-      color: var(--muted);
-    }
-
-    main {
-      flex: 1;
-      padding: 18px 20px 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 3fr) minmax(0, 2.4fr);
-      gap: 18px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-soft);
-      padding: 16px 16px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top right, var(--accent-soft), transparent 60%);
-      pointer-events: none;
-    }
-
-    .card-inner {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .card h2 {
-      margin: 0;
-      font-size: 1.05rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card h2 span.badge {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      padding: 2px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 166, 166, 0.4);
-      background: #f0fbfb;
-      color: var(--accent);
-    }
-
-    .card p.meta {
-      margin: 0;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-
-    label {
-      display: block;
-      font-size: 0.8rem;
-      margin-bottom: 4px;
-      color: var(--muted);
-    }
-
-    select, textarea, input[type="text"] {
-      width: 100%;
-      padding: 7px 9px;
-      border-radius: 10px;
-      border: 1px solid #c5d0db;
-      background: #f9fbfc;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.86rem;
-      outline: none;
-      resize: vertical;
-      min-height: 38px;
-      box-shadow: var(--shadow-subtle);
-    }
-
-    textarea {
-      min-height: 68px;
-      max-height: 40vh;
-    }
-
-    select:focus, textarea:focus, input[type="text"]:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(0, 166, 166, 0.25);
-      background: #ffffff;
-    }
-
-    .row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .row > * { flex: 1; min-width: 0; }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      padding: 7px 14px;
-      font-size: 0.82rem;
-      font-weight: 500;
-      cursor: pointer;
-      background: linear-gradient(135deg, #00b3a8, #46c368);
-      color: #ffffff;
-      box-shadow: 0 8px 22px rgba(0, 179, 168, 0.25);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease, opacity 0.1s;
-      white-space: nowrap;
-    }
-
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 30px rgba(0, 179, 168, 0.3);
-      opacity: 0.98;
-    }
-
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: 0 6px 16px rgba(0, 179, 168, 0.25);
-    }
-
-    .btn.secondary {
-      background: #ffffff;
-      color: var(--accent);
-      border-color: rgba(0, 166, 166, 0.45);
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
-    }
-
-    .btn.secondary:hover { background: #f0fbfb; }
-
-    .btn.small { padding: 5px 10px; font-size: 0.78rem; }
-
-    .btn.danger {
-      border-color: rgba(229, 57, 53, 0.4);
-      color: var(--danger);
-      background: #ffffff;
-      box-shadow: 0 2px 8px rgba(229, 57, 53, 0.15);
-    }
-
-    .btn.danger:hover { background: #fef4f4; }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      margin-top: 3px;
-    }
-
-    .chip {
-      padding: 2px 6px;
-      border-radius: 999px;
-      font-size: 0.68rem;
-      border: 1px solid rgba(148,163,184,0.5);
-      color: var(--muted);
-      background: #f7fafc;
-    }
-
-    .chip.flag {
-      border-color: rgba(229, 57, 53, 0.7);
-      color: var(--danger);
-      background: #fef0ef;
-    }
-
-    .small-label {
-      font-size: 0.76rem;
-      color: var(--muted);
-    }
-
-    .suggestions {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      font-size: 0.84rem;
-    }
-
-    .suggestion-block {
-      background: #f9fbfc;
-      border-radius: var(--radius-md);
-      padding: 8px 9px;
-      border: 1px solid rgba(197, 208, 219, 0.9);
-    }
-
-    .log-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .log-item {
-      border-radius: 12px;
-      padding: 7px 9px;
-      border: 1px solid rgba(197, 208, 219, 0.9);
-      background: #f9fbfc;
-      font-size: 0.8rem;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    .log-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.78rem;
-      color: var(--muted);
-    }
-
-    .log-role {
-      padding: 1px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(0, 166, 166, 0.4);
-      color: var(--accent);
-      background: #f0fbfb;
-    }
-
-    .log-channel {
-      font-size: 0.7rem;
-      padding: 1px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.5);
-      background: #ffffff;
-      color: var(--muted);
-    }
-
-    .log-body {
-      white-space: pre-wrap;
-      color: var(--text);
-    }
-
-    .notice {
-      font-size: 0.72rem;
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 4px 10px;
-      border: 1px dashed rgba(148,163,184,0.6);
-      background: #f9fbfc;
-    }
-
-    .section-divider {
-      border-top: 1px dashed rgba(148, 163, 184, 0.6);
-      margin: 6px 0;
-    }
-
-    /* Tablet */
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-        padding: 14px 12px 18px;
-      }
-    }
-
-    /* Mobiel klein */
-    @media (max-width: 600px) {
-      header {
-        padding: 12px 14px;
-      }
-
-      header h1 {
-        font-size: 1.1rem;
-      }
-
-      header p {
-        font-size: 0.8rem;
-      }
-
-      main {
-        padding: 10px;
-        gap: 10px;
-      }
-
-      .card {
-        padding: 12px 11px 10px;
-        border-radius: 12px;
-        box-shadow: var(--shadow-subtle);
-      }
-
-      .card h2 {
-        font-size: 0.98rem;
-      }
-
-      .card p.meta {
-        font-size: 0.78rem;
-      }
-
-      label {
-        font-size: 0.76rem;
-      }
-
-      select, textarea, input[type="text"] {
-        font-size: 0.8rem;
-        padding: 6px 8px;
-      }
-
-      .row {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-        justify-content: center;
-        font-size: 0.8rem;
-        padding: 7px 10px;
-      }
-
-      .btn.small {
-        width: auto;
-        padding: 4px 8px;
-        font-size: 0.76rem;
-      }
-
-      .log-item {
-        font-size: 0.76rem;
-      }
-
-      .log-item-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .log-channel {
-        font-size: 0.68rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eiwitkenner voor Liam</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .daily-progress {
+            padding: 20px;
+            text-align: center;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .progress-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+        
+        .progress-ring {
+            transform: rotate(-90deg);
+        }
+        
+        .progress-ring-circle {
+            fill: transparent;
+            stroke: #e0e0e0;
+            stroke-width: 8;
+        }
+        
+        .progress-ring-fill {
+            fill: transparent;
+            stroke: #4CAF50;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 0.3s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-good { background: #4CAF50; }
+        .status-warning { background: #ff9800; }
+        .status-danger { background: #f44336; }
+        
+        .tabs {
+            display: flex;
+            background: #f0f0f0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            min-height: 300px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .product-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        
+        .product-item:hover {
+            background: #f5f5f5;
+        }
+        
+        .product-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .product-protein {
+            color: #666;
+            font-size: 12px;
+        }
+        
+        .quantity-controls {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .quantity-controls.active {
+            display: flex;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px;
+        }
+        
+        .add-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .meal-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .meal-info {
+            flex: 1;
+        }
+        
+        .meal-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .meal-time {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .meal-protein {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .claude-chat {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            min-height: 60px;
+            font-family: inherit;
+        }
+        
+        .chat-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .chat-response {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-<header>
-  <h1>Communicatie Coach voor Relatie- & Systeemtherapie</h1>
-  <p>Demo met Jan, Truus en de therapeut. Analyseer berichten, bouw een logboek en oefen gezondere communicatie.</p>
-</header>
-
-<main>
-  <!-- LINKERKANT: ANALYSE + COACHING -->
-  <section class="card">
-    <div class="card-inner">
-      <div>
-        <h2>
-          Analyse & Coach
-          <span class="badge">Demo workflow</span>
-        </h2>
-        <p class="meta">
-          Kies rol en kanaal. De velden vullen zich met demo-berichten (Jan &amp; Truus / groepsapp met therapeut).
-        </p>
-      </div>
-
-      <div class="row">
-        <div>
-          <label for="roleSelect">Ik schrijf als</label>
-          <select id="roleSelect">
-            <option value="gezonde-ouder">Gezonde ouder (Jan)</option>
-            <option value="andere-ouder">Andere ouder (Truus)</option>
-            <option value="neutraal">Neutrale deelnemer / therapeut</option>
-          </select>
+    <div class="container">
+        <div class="header">
+            <h1>🍎 Eiwitkenner voor Liam</h1>
+            <p>Dagelijkse eiwitinname bijhouden</p>
         </div>
-        <div>
-          <label for="channelSelect">Kanaal (fictieve koppeling)</label>
-          <select id="channelSelect">
-            <option value="whatsapp">WhatsApp</option>
-            <option value="signal">Signal (groepsapp met therapeut)</option>
-            <option value="telegram">Telegram</option>
-            <option value="anders">E-mail / anders</option>
-          </select>
+        
+        <div class="daily-progress">
+            <div class="progress-circle">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle class="progress-ring-circle" cx="60" cy="60" r="50"></circle>
+                    <circle class="progress-ring-fill" cx="60" cy="60" r="50" 
+                            stroke-dasharray="0 314" id="progressCircle"></circle>
+                </svg>
+                <div class="progress-text" id="progressText">0/19g</div>
+            </div>
+            <div>
+                <span class="status-indicator status-good" id="statusIndicator"></span>
+                <span id="statusText">Nog 19 gram beschikbaar</span>
+            </div>
         </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <div>
-        <label for="incomingMessage">Laatste bericht van de ander</label>
-        <textarea id="incomingMessage" placeholder="Plak hier het bericht waar je op wilt reageren..."></textarea>
-      </div>
-
-      <div>
-        <label for="draftMessage">Mijn conceptreactie</label>
-        <textarea id="draftMessage" placeholder="Typ hier wat je eigenlijk wilt sturen..."></textarea>
-      </div>
-
-      <div class="row" style="align-items:center; margin-top:4px;">
-        <button class="btn" id="analyzeBtn">
-          <span>Analyseer & geef suggesties</span>
-        </button>
-        <button class="btn secondary" id="saveLogBtn">
-          Logboek: sla huidige interactie op
-        </button>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <div class="suggestions" id="analysisOutput">
-        <div class="notice">
-          Vul (of gebruik de demo-tekst) en klik op “Analyseer &amp; geef suggesties” om feedback en coach-zinnen te zien.
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('products')">Producten</button>
+            <button class="tab" onclick="showTab('meals')">Vandaag</button>
+            <button class="tab" onclick="showTab('claude')">AI Hulp</button>
         </div>
-      </div>
+        
+        <div id="products" class="tab-content active">
+            <h3>Liam's favorieten</h3>
+            <div class="product-list">
+                <div class="product-item" onclick="selectProduct('poffertjes', 4.2, 'portie')">
+                    <div>
+                        <div class="product-name">🥞 Poffertjes (Jumbo)</div>
+                        <div class="product-protein">4.2g eiwit per portie</div>
+                    </div>
+                </div>
+                <div class="product-item" onclick="selectProduct('boterham', 3.3, 'snee')">
+                    <div>
+                        <div class="product-name">🍞 Boterham</div>
+                        <div class="product-protein">3.3g eiwit per snee</div>
+                    </div>
+                </div>
+                <div class="product-item" onclick="selectProduct('fruit', 0.7, 'stuk')">
+                    <div>
+                        <div class="product-name">🍎 Fruit</div>
+                        <div class="product-protein">0.7g eiwit per stuk</div>
+                    </div>
+                </div>
+                <div class="product-item" onclick="selectProduct('aardappels', 1.8, '100g')">
+                    <div>
+                        <div class="product-name">🥔 Gebakken aardappels</div>
+                        <div class="product-protein">1.8g eiwit per 100g</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="quantity-controls" id="quantityControls">
+                <button class="quantity-btn" onclick="changeQuantity(-1)">-</button>
+                <input type="number" class="quantity-input" id="quantityInput" value="1" min="0.1" step="0.1">
+                <button class="quantity-btn" onclick="changeQuantity(1)">+</button>
+                <span id="selectedUnit">stuk</span>
+                <button class="add-btn" onclick="addToMeal()">Toevoegen</button>
+            </div>
+        </div>
+        
+        <div id="meals" class="tab-content">
+            <h3>Eetmomenten vandaag</h3>
+            <div id="mealsList">
+                <p style="color: #666; text-align: center; padding: 20px;">
+                    Nog geen eetmomenten toegevoegd vandaag
+                </p>
+            </div>
+        </div>
+        
+        <div id="claude" class="tab-content">
+            <h3>🤖 AI Assistent</h3>
+            <div class="claude-chat">
+                <p style="margin-bottom: 10px;">Vertel me wat Liam heeft gegeten en ik reken het uit!</p>
+                <textarea class="chat-input" id="claudeInput" 
+                          placeholder="Bijvoorbeeld: 'Liam heeft 2 boterhammen en een appel gegeten voor het ontbijt'"></textarea>
+                <button class="chat-btn" onclick="askClaude()">Bereken eiwitten</button>
+                <div class="chat-response hidden" id="claudeResponse"></div>
+            </div>
+        </div>
     </div>
-  </section>
 
-  <!-- RECHTERKANT: LOGBOEK + PATRONEN -->
-  <section class="card">
-    <div class="card-inner">
-      <div>
-        <h2>
-          Logboek & Patronen
-          <span class="badge">Leeg bij start</span>
-        </h2>
-        <p class="meta">
-          Hier zie je alleen het laatste bericht van de ander en de gekozen coach-formulering (met blauwe accentbalk).
-          Het logboek blijft lokaal in deze browser (localStorage).
-        </p>
-      </div>
-
-      <div class="row" style="align-items:center;">
-        <div class="row">
-          <button class="btn small secondary" id="exportBtn">Exporteer logboek (JSON)</button>
-          <button class="btn small danger" id="clearLogBtn">Wis logboek in deze browser</button>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <div class="log-list" id="logList"></div>
-      <div id="logEmptyNotice" class="notice">
-        Nog geen items in het logboek. Na een analyse kun je met “Logboek: sla huidige interactie op”
-        één interactie vastleggen (laatste bericht + gekozen coach-formulering).
-      </div>
-    </div>
-  </section>
-</main>
-
-<script>
-  const roleSelect = document.getElementById("roleSelect");
-  const channelSelect = document.getElementById("channelSelect");
-  const incomingMessage = document.getElementById("incomingMessage");
-  const draftMessage = document.getElementById("draftMessage");
-  const analyzeBtn = document.getElementById("analyzeBtn");
-  const saveLogBtn = document.getElementById("saveLogBtn");
-  const analysisOutput = document.getElementById("analysisOutput");
-  const logList = document.getElementById("logList");
-  const logEmptyNotice = document.getElementById("logEmptyNotice");
-  const exportBtn = document.getElementById("exportBtn");
-  const clearLogBtn = document.getElementById("clearLogBtn");
-
-  const absoluteWords = ["altijd", "nooit", "helemaal nooit", "constant", "iedere keer", "nooit goed"];
-  const attackPhrases = [
-    "jij bent",
-    "jij doet",
-    "jij maakt alles kapot",
-    "jij denkt alleen aan jezelf",
-    "jij luistert nooit",
-    "schuldig",
-    "egoïst",
-    "narcist",
-    "idioen",
-    "idioot",
-    "gek",
-    "ziek in je hoofd"
-  ];
-  const escalationWords = [
-    "klaar met jou",
-    "ik ben er klaar mee",
-    "ik ben klaar met dit",
-    "je krijgt niks meer",
-    "ik ga naar de advocaat",
-    "ik ben je zat"
-  ];
-
-  const STORAGE_KEY = "relatie_communicatie_logboek_v1";
-  let logItems = [];
-  let lastSelectedSuggestion = "";
-
-  function escapeHtml(str) {
-    if (!str) return "";
-    return str
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function classifyDraft(text) {
-    const lower = text.toLowerCase();
-    const flags = [];
-
-    absoluteWords.forEach((w) => {
-      if (lower.includes(w)) flags.push("Absoluut taalgebruik (“" + w + "”)");
-    });
-    attackPhrases.forEach((w) => {
-      if (lower.includes(w)) flags.push("Aanval / beschuldiging (“" + w + "”)");
-    });
-    escalationWords.forEach((w) => {
-      if (lower.includes(w)) flags.push("Escalatie / dreiging (“" + w + "”)");
-    });
-
-    const letters = text.replace(/[^A-Za-z]/g, "");
-    const caps = text.replace(/[^A-Z]/g, "");
-    const capsRatio = caps.length / Math.max(letters.length, 1);
-    if (capsRatio > 0.4 && text.length > 8) {
-      flags.push("Veel hoofdletters (kan als schreeuwen overkomen)");
-    }
-
-    return flags;
-  }
-
-  function getCoachFocus(role) {
-    return {
-      focusHealthy: role === "gezonde-ouder",
-      focusNarc: true
-    };
-  }
-
-  function generateSuggestions(draft, role, opts) {
-    const suggestions = [];
-    const trimmed = draft.trim();
-
-    suggestions.push({
-      title: "Meer in ik-taal en concreet gedrag",
-      text:
-        "Wanneer [concreet gedrag van de ander], dan voel ik mij [gevoel] en ik heb nodig dat [concrete behoefte]. " +
-        "Zou je [specifiek verzoek] willen doen, zodat we dit voor de kinderen rustiger houden?"
-    });
-
-    suggestions.push({
-      title: "Van jij-beschuldiging naar gezamenlijke focus",
-      text:
-        "Ik merk dat deze situatie mij veel spanning geeft. Ik wil voorkomen dat we in verwijten blijven hangen. " +
-        "Kunnen we samen kijken naar een oplossing waarin zowel jouw als mijn zorgen een plek krijgen?"
-    });
-
-    if (opts.focusHealthy) {
-      suggestions.push({
-        title: "Gezonde ouder: begrenzen zonder escaleren",
-        text:
-          "Ik begrijp dat jij dit anders ziet. Voor mij is het belangrijk dat we afspraken maken die voorspelbaar zijn voor de kinderen. " +
-          "Dit is voor mij de grens: [beschrijf kort en concreet]. Ik blijf hierover rustig, maar ik wijk daar niet van af."
-      });
-    }
-
-    if (opts.focusNarc) {
-      suggestions.push({
-        title: "Perspectiefwisseling: erkenning + grens",
-        text:
-          "Ik zie dat het voor jou ook een lastig onderwerp is en dat je je mogelijk niet gehoord voelt. " +
-          "Tegelijk heb ik mijn eigen grenzen en behoeften. Ik wil jouw kant horen, maar niet ten koste van respect naar mij toe."
-      });
-    }
-
-    const lower = draft.toLowerCase();
-    if (lower.includes("advocaat") || lower.includes("rechter")) {
-      suggestions.push({
-        title: "Juridische toon verzachten (als het kan)",
-        text:
-          "Ik wil liever voorkomen dat we meteen alles juridisch maken. " +
-          "Zullen we eerst proberen om met hulp van onze therapeut / begeleider dit gesprek te voeren, zodat we beide beter gehoord worden?"
-      });
-    }
-
-    if (!trimmed) {
-      suggestions.push({
-        title: "Startzin als je vastloopt",
-        text:
-          "Ik vind het lastig om dit rustig te verwoorden, dus ik probeer het stap voor stap: " +
-          "voor mij is er iets belangrijk waar ik met je over wil afstemmen, omdat het invloed heeft op de kinderen."
-      });
-    }
-
-    return suggestions;
-  }
-
-  function buildAnalysisView(incoming, draft) {
-    const role = roleSelect.value;
-    const roleLabel =
-      role === "gezonde-ouder"
-        ? "Gezonde ouder (Jan)"
-        : role === "andere-ouder"
-        ? "Andere ouder (Truus)"
-        : "Therapeut / neutraal";
-
-    const flags = classifyDraft(draft || "");
-    const focus = getCoachFocus(role);
-    const suggestions = generateSuggestions(draft || "", role, focus);
-
-    analysisOutput.innerHTML = "";
-
-    const summaryBlock = document.createElement("div");
-    summaryBlock.className = "suggestion-block";
-    summaryBlock.innerHTML =
-      "<strong>Samenvatting analyse</strong>" +
-      `<div class="chips">
-        <span class="chip">Rol: ${escapeHtml(roleLabel)}</span>
-        <span class="chip">Kanaal: ${escapeHtml(
-          channelSelect.options[channelSelect.selectedIndex].text
-        )}</span>
-      </div>` +
-      `<p class="small-label" style="margin-top:4px;">Signalen in jouw conceptreactie:</p>`;
-
-    const chips = document.createElement("div");
-    chips.className = "chips";
-    if (flags.length) {
-      flags.forEach((f) => {
-        const c = document.createElement("span");
-        c.className = "chip flag";
-        c.textContent = f;
-        chips.appendChild(c);
-      });
-    } else {
-      const c = document.createElement("span");
-      c.className = "chip";
-      c.textContent = "Geen sterke escalatie-signalen gevonden.";
-      chips.appendChild(c);
-    }
-    summaryBlock.appendChild(chips);
-    analysisOutput.appendChild(summaryBlock);
-
-    suggestions.forEach((sugg) => {
-      const sBlock = document.createElement("div");
-      sBlock.className = "suggestion-block";
-      sBlock.innerHTML =
-        `<strong>${escapeHtml(sugg.title)}</strong>` +
-        `<p style="margin:4px 0 6px; font-size:0.84rem; line-height:1.4;">${escapeHtml(
-          sugg.text
-        )}</p>`;
-
-      const btn = document.createElement("button");
-      btn.className = "btn small secondary";
-      btn.textContent = "Gebruik deze formulering in mijn concept";
-      btn.addEventListener("click", () => {
-        draftMessage.value = sugg.text;
-        lastSelectedSuggestion = sugg.text;
-        buildAnalysisView(incomingMessage.value, draftMessage.value);
-      });
-      sBlock.appendChild(btn);
-
-      analysisOutput.appendChild(sBlock);
-    });
-
-    const footerNotice = document.createElement("div");
-    footerNotice.className = "notice";
-    footerNotice.textContent =
-      "Deze tool doet géén diagnose en vervangt geen therapeut. Gebruik het als ondersteuning; " +
-      "belangrijke keuzes altijd met een professional afstemmen.";
-    analysisOutput.appendChild(footerNotice);
-  }
-
-  function resetAnalysisNotice() {
-    analysisOutput.innerHTML = "";
-    const note = document.createElement("div");
-    note.className = "notice";
-    note.textContent =
-      "Vul (of gebruik de demo-tekst) en klik op “Analyseer & geef suggesties” om feedback en coach-zinnen te zien.";
-    analysisOutput.appendChild(note);
-  }
-
-  function saveLogToStorage() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(logItems));
-    } catch (e) {
-      console.warn("Opslaan in localStorage mislukt", e);
-    }
-  }
-
-  function addLogItem(entry) {
-    logItems.unshift(entry);
-    saveLogToStorage();
-    renderLog();
-  }
-
-  function renderLog() {
-    logList.innerHTML = "";
-    if (!logItems.length) {
-      logEmptyNotice.style.display = "block";
-      return;
-    }
-    logEmptyNotice.style.display = "none";
-
-    logItems.forEach((item) => {
-      const div = document.createElement("div");
-      div.className = "log-item";
-
-      const header = document.createElement("div");
-      header.className = "log-item-header";
-
-      const roleSpan = document.createElement("span");
-      roleSpan.className = "log-role";
-      roleSpan.textContent = item.roleLabel || item.role || "Onbekend";
-
-      const rightMeta = document.createElement("div");
-      rightMeta.style.display = "flex";
-      rightMeta.style.alignItems = "center";
-      rightMeta.style.gap = "6px";
-
-      const channel = document.createElement("span");
-      channel.className = "log-channel";
-      channel.textContent = item.channelLabel || item.channel || "kanaal";
-      rightMeta.appendChild(channel);
-
-      const timeSpan = document.createElement("span");
-      timeSpan.style.fontSize = "0.7rem";
-      timeSpan.style.color = "#6b7280";
-      timeSpan.textContent = new Date(item.createdAt).toLocaleString();
-      rightMeta.appendChild(timeSpan);
-
-      header.appendChild(roleSpan);
-      header.appendChild(rightMeta);
-
-      const bodyIncoming = document.createElement("div");
-      bodyIncoming.className = "log-body";
-      bodyIncoming.textContent = item.incoming
-        ? "Laatste bericht van de ander: " + item.incoming
-        : "Laatste bericht van de ander: (niet ingevuld)";
-
-      const bodySuggestion = document.createElement("div");
-      bodySuggestion.className = "log-body";
-      bodySuggestion.style.borderLeft = "4px solid rgba(0,166,166,0.9)";
-      bodySuggestion.style.paddingLeft = "8px";
-      bodySuggestion.style.marginTop = "4px";
-      bodySuggestion.style.background = "#f0fbfb";
-      bodySuggestion.style.borderRadius = "6px";
-      bodySuggestion.textContent =
-        item.selectedSuggestion && item.selectedSuggestion.trim()
-          ? item.selectedSuggestion
-          : "Geen coach-formulering geselecteerd in deze interactie.";
-
-      div.appendChild(header);
-      div.appendChild(bodyIncoming);
-      div.appendChild(bodySuggestion);
-
-      logList.appendChild(div);
-    });
-  }
-
-  function loadLog() {
-    logItems = [];
-    saveLogToStorage();
-    renderLog();
-  }
-
-  function getDemoScenario(role, channel) {
-    if (role === "gezonde-ouder" && channel === "whatsapp") {
-      return {
-        incoming:
-          "Truus via WhatsApp: \"Je bent echt een waardeloze vader. Je doet NOOIT wat we afspreken en je denkt alleen maar aan jezelf.\"",
-        draft:
-          "Jan: \"Ik ben boos en geraakt door wat je zegt. Wanneer jij zegt dat ik nooit iets goed doe, " +
-          "voel ik me machteloos en aangevallen. Ik wil dat we afspraken maken die voorspelbaar zijn voor de kinderen, " +
-          "zonder elkaar te verwijten dat alles altijd fout gaat.\""
-      };
-    }
-
-    if (role === "gezonde-ouder" && channel === "anders") {
-      return {
-        incoming:
-          "Truus per e-mail: \"Je hebt wéér het schema aangepast zonder overleg. De kinderen worden hier alleen maar onrustig van door jou.\"",
-        draft:
-          "Jan: \"In je mail lees ik dat je je veel zorgen maakt over de onrust bij de kinderen. " +
-          "Dat herken ik, en daarom wil ik graag vaste afspraken. Zullen we samen één schema afspreken " +
-          "dat we minimaal drie maanden aanhouden, zodat er meer voorspelbaarheid ontstaat?\""
-      };
-    }
-
-    if (role === "andere-ouder" && channel === "whatsapp") {
-      return {
-        incoming:
-          "Jan via WhatsApp: \"Als jij weer op het laatste moment alles omgooit, raken de kinderen overstuur. Dit werkt zo niet.\"",
-        draft:
-          "Truus: \"Jij doet net alsof jij alles perfect doet. Jij bent degene die ALTIJD moeilijk doet over elk detail.\""
-      };
-    }
-
-    if (role === "neutraal" && channel === "signal") {
-      return {
-        incoming:
-          "Truus in groepsapp: \"Ik ben je gedrag zat, jij verandert toch nooit.\"  \n" +
-          "Jan in groepsapp: \"Dit is precies wat ik bedoel, alles ligt altijd aan mij.\"",
-        draft:
-          "Therapeut: \"Ik hoor bij jullie allebei veel frustratie. Ik stel voor dat we nu even pauzeren met verwijten. " +
-          "Willen jullie ieder één voorbeeld delen van een moment waarop het wél beter ging tussen jullie, " +
-          "zodat we vanuit die situaties kunnen onderzoeken wat werkte?\""
-      };
-    }
-
-    if (role === "neutraal" && channel === "anders") {
-      return {
-        incoming:
-          "Jan per e-mail (cc Truus): \"Ik ben bang dat onze afspraken elke week veranderen. Dit voelt onveilig voor mij en de kinderen.\"",
-        draft:
-          "Therapeut: \"Dank voor je mail, Jan. Ik hoor dat voorspelbaarheid voor jou en de kinderen belangrijk is. " +
-          "In onze volgende sessie wil ik graag met jullie allebei drie concrete afspraken maken die minimaal een paar maanden gelden, " +
-          "zodat er meer rust ontstaat.\""
-      };
-    }
-
-    return {
-      incoming:
-        "Truus: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"",
-      draft:
-        "Jan: \"Wanneer afspraken last-minute veranderen, raak ik gestrest en maak ik me zorgen of het voor de kinderen wel voorspelbaar blijft. " +
-        "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\""
-    };
-  }
-
-  function seedFormDemoFromSelection() {
-    const role = roleSelect.value;
-    const channel = channelSelect.value;
-    const scenario = getDemoScenario(role, channel);
-    incomingMessage.value = scenario.incoming || "";
-    draftMessage.value = scenario.draft || "";
-    lastSelectedSuggestion = "";
-    resetAnalysisNotice();
-  }
-
-  analyzeBtn.addEventListener("click", () => {
-    const incoming = incomingMessage.value || "";
-    const draft = draftMessage.value || "";
-    buildAnalysisView(incoming, draft);
-  });
-
-  saveLogBtn.addEventListener("click", () => {
-    const incoming = incomingMessage.value || "";
-    const draft = draftMessage.value || "";
-
-    const selectedSuggestion = lastSelectedSuggestion || "";
-
-    const role = roleSelect.value;
-    const roleLabel =
-      role === "gezonde-ouder"
-        ? "Gezonde ouder (Jan)"
-        : role === "andere-ouder"
-        ? "Andere ouder (Truus)"
-        : "Therapeut / neutraal";
-
-    const channelLabel = channelSelect.options[channelSelect.selectedIndex].text;
-
-    addLogItem({
-      role,
-      roleLabel,
-      channel: channelSelect.value,
-      channelLabel,
-      incoming:
-        incoming ||
-        "(demo) Er is een bericht binnengekomen via " + channelLabel + ".",
-      selectedSuggestion,
-      createdAt: new Date().toISOString()
-    });
-  });
-
-  exportBtn.addEventListener("click", () => {
-    const blob = new Blob([JSON.stringify(logItems, null, 2)], {
-      type: "application/json"
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "communicatie-logboek-demo-jan-truus.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-
-  clearLogBtn.addEventListener("click", () => {
-    if (!confirm("Weet je zeker dat je het volledige logboek in deze browser wilt wissen?")) {
-      return;
-    }
-    logItems = [];
-    saveLogToStorage();
-    renderLog();
-  });
-
-  roleSelect.addEventListener("change", seedFormDemoFromSelection);
-  channelSelect.addEventListener("change", seedFormDemoFromSelection);
-
-  loadLog();
-  resetAnalysisNotice();
-  seedFormDemoFromSelection();
-</script>
+    <script>
+        let currentProtein = 0;
+        let meals = [];
+        let selectedProduct = null;
+        
+        const products = {
+            'poffertjes': { name: '🥞 Poffertjes (Jumbo)', protein: 4.2, unit: 'portie' },
+            'boterham': { name: '🍞 Boterham', protein: 3.3, unit: 'snee' },
+            'fruit': { name: '🍎 Fruit', protein: 0.7, unit: 'stuk' },
+            'aardappels': { name: '🥔 Gebakken aardappels', protein: 1.8, unit: '100g' }
+        };
+        
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        function selectProduct(productKey, protein, unit) {
+            selectedProduct = { key: productKey, protein: protein, unit: unit };
+            document.getElementById('quantityControls').classList.add('active');
+            document.getElementById('selectedUnit').textContent = unit;
+            document.getElementById('quantityInput').value = 1;
+        }
+        
+        function changeQuantity(delta) {
+            const input = document.getElementById('quantityInput');
+            const currentValue = parseFloat(input.value) || 0;
+            const newValue = Math.max(0.1, currentValue + delta * 0.1);
+            input.value = newValue.toFixed(1);
+        }
+        
+        function addToMeal() {
+            if (!selectedProduct) return;
+            
+            const quantity = parseFloat(document.getElementById('quantityInput').value) || 0;
+            const totalProtein = selectedProduct.protein * quantity;
+            
+            const meal = {
+                id: Date.now(),
+                name: products[selectedProduct.key].name,
+                quantity: quantity,
+                unit: selectedProduct.unit,
+                protein: totalProtein,
+                time: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            meals.push(meal);
+            currentProtein += totalProtein;
+            
+            updateDisplay();
+            document.getElementById('quantityControls').classList.remove('active');
+            selectedProduct = null;
+        }
+        
+        function deleteMeal(mealId) {
+            const meal = meals.find(m => m.id === mealId);
+            if (meal) {
+                currentProtein -= meal.protein;
+                meals = meals.filter(m => m.id !== mealId);
+                updateDisplay();
+            }
+        }
+        
+        function updateDisplay() {
+            // Update progress circle
+            const percentage = Math.min((currentProtein / 19) * 100, 100);
+            const circumference = 2 * Math.PI * 50;
+            const strokeDasharray = (percentage / 100) * circumference;
+            
+            document.getElementById('progressCircle').style.strokeDasharray = `${strokeDasharray} ${circumference}`;
+            document.getElementById('progressText').textContent = `${currentProtein.toFixed(1)}/19g`;
+            
+            // Update status
+            const remaining = 19 - currentProtein;
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            if (currentProtein > 19) {
+                statusIndicator.className = 'status-indicator status-danger';
+                statusText.textContent = `⚠️ ${(currentProtein - 19).toFixed(1)}g te veel!`;
+                document.getElementById('progressCircle').style.stroke = '#f44336';
+            } else if (remaining <= 2) {
+                statusIndicator.className = 'status-indicator status-warning';
+                statusText.textContent = `⚡ Nog ${remaining.toFixed(1)}g beschikbaar`;
+                document.getElementById('progressCircle').style.stroke = '#ff9800';
+            } else {
+                statusIndicator.className = 'status-indicator status-good';
+                statusText.textContent = `✅ Nog ${remaining.toFixed(1)}g beschikbaar`;
+                document.getElementById('progressCircle').style.stroke = '#4CAF50';
+            }
+            
+            // Update meals list
+            const mealsList = document.getElementById('mealsList');
+            if (meals.length === 0) {
+                mealsList.innerHTML = '<p style="color: #666; text-align: center; padding: 20px;">Nog geen eetmomenten toegevoegd vandaag</p>';
+            } else {
+                mealsList.innerHTML = meals.map(meal => `
+                    <div class="meal-item">
+                        <div class="meal-info">
+                            <div class="meal-name">${meal.name}</div>
+                            <div class="meal-time">${meal.time} - ${meal.quantity} ${meal.unit}</div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="meal-protein">${meal.protein.toFixed(1)}g</div>
+                            <button class="delete-btn" onclick="deleteMeal(${meal.id})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+        
+        function askClaude() {
+            const input = document.getElementById('claudeInput').value.trim();
+            if (!input) return;
+            
+            const response = document.getElementById('claudeResponse');
+            response.classList.remove('hidden');
+            
+            // Simulate Claude response (in real app, this would call the API)
+            response.innerHTML = `
+                <strong>🤖 Claude's berekening:</strong><br><br>
+                Ik zie dat Liam heeft gegeten:<br>
+                • 2 boterhammen = 6.6g eiwit<br>
+                • 1 appel = 0.7g eiwit<br><br>
+                <strong>Totaal: 7.3g eiwit</strong><br><br>
+                <em>Tip: Liam heeft nog ${(19 - currentProtein - 7.3).toFixed(1)}g over voor de rest van de dag!</em><br><br>
+                <button class="add-btn" onclick="addClaudeCalculation(7.3, 'Claude berekening')">Deze toevoegen</button>
+            `;
+        }
+        
+        function addClaudeCalculation(protein, name) {
+            const meal = {
+                id: Date.now(),
+                name: `🤖 ${name}`,
+                quantity: 1,
+                unit: 'berekening',
+                protein: protein,
+                time: new Date().toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })
+            };
+            
+            meals.push(meal);
+            currentProtein += protein;
+            updateDisplay();
+            
+            // Switch to meals tab
+            showTab('meals');
+            document.querySelector('[onclick="showTab(\'meals\')"]').classList.add('active');
+        }
+        
+        // Initialize display
+        updateDisplay();
+    </script>
 </body>
 </html>
