@@ -8,9 +8,8 @@
     :root {
       --bg: #f3f5f7;
       --card: #ffffff;
-      --accent: #00a6a6; /* zorg-achtige teal */
+      --accent: #00a6a6;
       --accent-soft: rgba(0, 166, 166, 0.08);
-      --accent-soft-strong: rgba(0, 166, 166, 0.14);
       --danger: #e53935;
       --border: #d1d9e0;
       --text: #102a43;
@@ -510,6 +509,7 @@
 
   const STORAGE_KEY = "relatie_communicatie_logboek_v1";
   let logItems = [];
+  let lastSelectedSuggestion = ""; // alleen setten bij klik op "Gebruik deze formulering"
 
   function escapeHtml(str) {
     if (!str) return "";
@@ -664,6 +664,7 @@
       btn.textContent = "Gebruik deze formulering in mijn concept";
       btn.addEventListener("click", () => {
         draftMessage.value = sugg.text;
+        lastSelectedSuggestion = sugg.text;          // Alleen hier zetten
         buildAnalysisView(incomingMessage.value, draftMessage.value);
       });
       sBlock.appendChild(btn);
@@ -678,10 +679,8 @@
       "belangrijke keuzes altijd met een professional afstemmen.";
     analysisOutput.appendChild(footerNotice);
 
-    return {
-      flags,
-      primarySuggestion: suggestions.length ? suggestions[0].text : ""
-    };
+    // flags worden gebruikt in save-handler
+    return { flags };
   }
 
   function saveLogToStorage() {
@@ -748,12 +747,12 @@
 
       const bodySuggestion = document.createElement("div");
       bodySuggestion.className = "log-body";
-      bodySuggestion.style.borderLeft = "3px solid " + "rgba(0,166,166,0.55)";
+      bodySuggestion.style.borderLeft = "3px solid rgba(0,166,166,0.55)";
       bodySuggestion.style.paddingLeft = "6px";
       bodySuggestion.style.marginTop = "4px";
       bodySuggestion.textContent =
         item.selectedSuggestion ||
-        (item.summarySuggestion || "Geen specifieke suggestie opgeslagen.");
+        "Geen specifieke coach-suggestie geselecteerd / opgeslagen.";
 
       const flags = document.createElement("div");
       flags.className = "log-meta";
@@ -790,10 +789,6 @@
       "Jan: \"Jij bent degene die altijd alles kapot maakt. Ik ben er KLAAR mee en ik ga wel naar de advocaat, jij luistert toch nooit.\"";
 
     const flags1 = classifyDraft(draft1);
-    const suggs1 = generateSuggestions(draft1, "gezonde-ouder", {
-      focusHealthy: true,
-      focusNarc: false
-    });
 
     demoEntries.push({
       role: "gezonde-ouder",
@@ -802,8 +797,7 @@
       channelLabel: "WhatsApp",
       incoming: incoming1,
       draft: draft1,
-      selectedSuggestion: suggs1.length ? suggs1[0].text : "",
-      summarySuggestion: suggs1.length ? suggs1[0].text : "",
+      selectedSuggestion: "",
       flags: flags1,
       focusHealthy: true,
       focusNarc: false,
@@ -817,10 +811,6 @@
       "Ik heb nodig dat we de afspraken van tevoren vastleggen en ons daaraan houden, zodat er voor hen meer rust is.\"";
 
     const flags2 = classifyDraft(draft2);
-    const suggs2 = generateSuggestions(draft2, "gezonde-ouder", {
-      focusHealthy: true,
-      focusNarc: true
-    });
 
     demoEntries.push({
       role: "gezonde-ouder",
@@ -829,8 +819,7 @@
       channelLabel: "WhatsApp",
       incoming: incoming2,
       draft: draft2,
-      selectedSuggestion: suggs2.length ? suggs2[0].text : "",
-      summarySuggestion: suggs2.length ? suggs2[0].text : "",
+      selectedSuggestion: "",
       flags: flags2,
       focusHealthy: true,
       focusNarc: true,
@@ -844,10 +833,6 @@
       "Zullen we allebei één concreet voorbeeld noemen van wat wél werkte, zodat we daarop kunnen voortbouwen?\"";
 
     const flags3 = classifyDraft(draft3);
-    const suggs3 = generateSuggestions(draft3, "neutraal", {
-      focusHealthy: false,
-      focusNarc: true
-    });
 
     demoEntries.push({
       role: "neutraal",
@@ -856,8 +841,7 @@
       channelLabel: "Signal",
       incoming: incoming3,
       draft: draft3,
-      selectedSuggestion: suggs3.length ? suggs3[0].text : "",
-      summarySuggestion: suggs3.length ? suggs3[0].text : "",
+      selectedSuggestion: "",
       flags: flags3,
       focusHealthy: false,
       focusNarc: true,
@@ -884,7 +868,6 @@
 
   // Demo-scenario per rol + kanaal
   function getDemoScenario(role, channel) {
-    // gezondere ouder Jan op WhatsApp
     if (role === "gezonde-ouder" && channel === "whatsapp") {
       return {
         incoming:
@@ -898,7 +881,6 @@
       };
     }
 
-    // gezondere ouder Jan via e-mail
     if (role === "gezonde-ouder" && channel === "anders") {
       return {
         incoming:
@@ -912,7 +894,6 @@
       };
     }
 
-    // Truus (andere ouder) WhatsApp
     if (role === "andere-ouder" && channel === "whatsapp") {
       return {
         incoming:
@@ -924,7 +905,6 @@
       };
     }
 
-    // therapeut / neutraal in Signal groepsapp
     if (role === "neutraal" && channel === "signal") {
       return {
         incoming:
@@ -939,7 +919,6 @@
       };
     }
 
-    // therapeut in andere kanalen
     if (role === "neutraal" && channel === "anders") {
       return {
         incoming:
@@ -953,7 +932,6 @@
       };
     }
 
-    // fallback demo
     return {
       incoming:
         "Truus: \"Je ziet de kinderen te weinig en dat is jouw schuld. Jij verpest ALLES voor ze.\"",
@@ -973,6 +951,7 @@
     draftMessage.value = scenario.draft || "";
     focusHealthy.checked = !!scenario.focusHealthy;
     focusNarc.checked = !!scenario.focusNarc;
+    lastSelectedSuggestion = ""; // nieuwe context, selectie resetten
     buildAnalysisView(incomingMessage.value, draftMessage.value);
   }
 
@@ -986,7 +965,8 @@
     const incoming = incomingMessage.value || "";
     const draft = draftMessage.value || "";
 
-    const { flags, primarySuggestion } = buildAnalysisView(incoming, draft);
+    const flags = classifyDraft(draft || ""); // enkel voor signalen in log
+    const selectedSuggestion = lastSelectedSuggestion || "";
 
     const role = roleSelect.value;
     const roleLabel =
@@ -1007,8 +987,7 @@
         incoming ||
         "(demo) Er is een bericht binnengekomen via " + channelLabel + ".",
       draft: draft || "(demo) Er is nog geen conceptreactie ingevuld.",
-      selectedSuggestion: primarySuggestion,
-      summarySuggestion: primarySuggestion,
+      selectedSuggestion,               // alléén wat jij hebt gekozen
       flags,
       focusHealthy: focusHealthy.checked,
       focusNarc: focusNarc.checked,
